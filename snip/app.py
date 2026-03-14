@@ -65,15 +65,33 @@ class SnipApp(App):
     """snip — a terminal snippet manager."""
 
     TITLE = "snip"
-    SUB_TITLE = "your terminal snippet vault"
+    SUB_TITLE = "terminal snippet vault"
 
     CSS = """
     Screen {
-        background: $surface;
+        background: #0d0f18;
     }
     Header {
-        background: $panel;
-        color: $text;
+        background: #13141f;
+        color: #c0caf5;
+        border-bottom: tall #2a2c42;
+    }
+    Footer {
+        background: #13141f;
+        color: #565f89;
+        border-top: tall #2a2c42;
+    }
+    FooterKey {
+        background: #13141f;
+        color: #565f89;
+    }
+    FooterKey .footer-key--key {
+        color: #7aa2f7;
+        background: #252640;
+    }
+    FooterKey:hover .footer-key--key {
+        background: #7aa2f7;
+        color: #0d0f18;
     }
     """
 

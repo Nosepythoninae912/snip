@@ -34,49 +34,65 @@ class MainScreen(Screen):
 
     DEFAULT_CSS = """
     MainScreen {
-        background: $surface;
+        background: #0d0f18;
         layers: base overlay;
     }
+
+    /* ── search bar ─────────────────────────────────────────── */
     MainScreen .search-bar {
         height: 3;
-        border-bottom: tall $panel;
-        padding: 0 1;
+        background: #0a0b14;
+        border-bottom: tall #2a2c42;
+        padding: 0 2;
         overflow: hidden;
+    }
+    MainScreen .search-label {
+        color: #7aa2f7;
+        width: auto;
+        min-width: 2;
+        padding: 1 1 1 0;
+        text-style: bold;
     }
     MainScreen Input {
         border: none;
         background: transparent;
+        color: #c0caf5;
         height: 1;
         padding: 1 0;
         width: 1fr;
         min-width: 8;
     }
-    MainScreen .search-label {
-        color: $accent;
-        width: auto;
-        min-width: 2;
-        padding: 1 1 1 0;
+    MainScreen Input:focus {
+        border: none;
+        background: transparent;
     }
-    MainScreen .status-bar {
-        height: 1;
-        background: $panel;
-        padding: 0 1;
-        color: $text-muted;
-    }
+
+    /* ── panels ─────────────────────────────────────────────── */
     MainScreen .panels {
         height: 1fr;
         min-height: 4;
     }
+
+    /* ── status bar ─────────────────────────────────────────── */
+    MainScreen .status-bar {
+        height: 1;
+        background: #0a0b14;
+        padding: 0 2;
+        color: #3b3f5c;
+        border-top: tall #2a2c42;
+    }
+
+    /* ── too-small overlay ──────────────────────────────────── */
     MainScreen #too-small-overlay {
         layer: overlay;
         display: none;
         width: 100%;
         height: 100%;
-        background: $surface;
+        background: #0d0f18;
         align: center middle;
     }
     MainScreen #too-small-overlay Static {
-        color: $warning;
+        color: #565f89;
         text-align: center;
         width: auto;
     }
@@ -91,7 +107,7 @@ class MainScreen(Screen):
         yield Header(show_clock=True)
         with Horizontal(classes="search-bar"):
             yield Label("/", classes="search-label")
-            yield Input(placeholder="Search snippets…", id="search-input")
+            yield Input(placeholder="search snippets...", id="search-input")
         with Horizontal(classes="panels"):
             yield SnippetList(id="snippet-list")
             yield SnippetPreview(id="snippet-preview")
@@ -99,7 +115,7 @@ class MainScreen(Screen):
         yield Footer()
         with Vertical(id="too-small-overlay"):
             yield Static(
-                f"Terminal too small\nMinimum size: {self.MIN_WIDTH}\u00d7{self.MIN_HEIGHT}"
+                f"terminal too small\nminimum {self.MIN_WIDTH}\u00d7{self.MIN_HEIGHT}"
             )
 
     def on_mount(self) -> None:
@@ -132,8 +148,8 @@ class MainScreen(Screen):
         self.query_one("#snippet-preview", SnippetPreview).snippet = snippet
 
     def _update_status(self, shown: int, total: int) -> None:
-        count = f"  {shown}/{total} snippet{'s' if total != 1 else ''}"
-        filt = f'  \u00b7  filter: "{self._query}"' if self._query else ""
+        count = f"{shown}/{total} snippet{'s' if total != 1 else ''}"
+        filt = f"  \u00b7  \"{self._query}\"" if self._query else ""
         self.query_one("#status-bar", Label).update(count + filt)
 
     # ------------------------------------------------------------------
@@ -182,7 +198,7 @@ class MainScreen(Screen):
             if result is not None:
                 self._db.create(result)
                 self._refresh_list(self._query)
-                self._flash(f"Created '{result.title}'")
+                self._flash(f"created \u2018{result.title}\u2019")
 
         self.app.push_screen(EditScreen(), _on_result)
 
@@ -197,7 +213,7 @@ class MainScreen(Screen):
             if result is not None:
                 self._db.update(result)
                 self._refresh_list(self._query)
-                self._flash(f"Updated '{result.title}'")
+                self._flash(f"updated \u2018{result.title}\u2019")
 
         self.app.push_screen(EditScreen(snippet), _on_result)
 
@@ -205,9 +221,10 @@ class MainScreen(Screen):
         snippet = self.query_one("#snippet-list", SnippetList).highlighted_snippet()
         if snippet is None or snippet.id is None:
             return
+        title = snippet.title
         self._db.delete(snippet.id)
         self._refresh_list(self._query)
-        self._flash(f"Deleted '{snippet.title}'")
+        self._flash(f"deleted \u2018{title}\u2019")
 
     def action_yank_snippet(self) -> None:
         snippet = self.query_one("#snippet-list", SnippetList).highlighted_snippet()
@@ -216,9 +233,9 @@ class MainScreen(Screen):
         from snip.utils.clipboard import copy_to_clipboard
 
         if copy_to_clipboard(snippet.content):
-            self._flash(f"Copied '{snippet.title}' to clipboard")
+            self._flash(f"copied \u2018{snippet.title}\u2019 to clipboard")
         else:
-            self._flash("Clipboard not available \u2013 install pyperclip")
+            self._flash("clipboard unavailable \u2013 install pyperclip")
 
     def action_pin_snippet(self) -> None:
         snippet = self.query_one("#snippet-list", SnippetList).highlighted_snippet()
@@ -227,10 +244,10 @@ class MainScreen(Screen):
         pinned = self._db.toggle_pin(snippet.id)
         self._refresh_list(self._query)
         state = "pinned" if pinned else "unpinned"
-        self._flash(f"{snippet.title!r} {state}")
+        self._flash(f"\u2018{snippet.title}\u2019 {state}")
 
     def action_quit(self) -> None:
         self.app.exit()
 
     def _flash(self, msg: str) -> None:
-        self.query_one("#status-bar", Label).update(f"  \u2713 {msg}")
+        self.query_one("#status-bar", Label).update(f"\u2713  {msg}")

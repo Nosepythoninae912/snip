@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from textual.app import ComposeResult
-from textual.binding import Binding
 from textual.reactive import reactive
 from textual.widget import Widget
 from textual.widgets import ListItem, ListView, Static
@@ -14,20 +13,30 @@ class SnippetItem(ListItem):
 
     DEFAULT_CSS = """
     SnippetItem {
-        height: 3;
-        padding: 0 1;
+        height: 4;
+        padding: 1 2;
+        background: #0d0f18;
+        border-bottom: tall #1a1c2e;
     }
     SnippetItem:hover {
-        background: $boost;
+        background: #12131e;
     }
-    SnippetItem.-selected {
-        background: $accent 20%;
+    SnippetItem.-highlighted {
+        background: #131729;
+        border-left: tall #7aa2f7;
+        padding-left: 1;
+    }
+    SnippetItem.-highlighted > .item-title {
+        color: #e0e7ff;
     }
     SnippetItem > .item-title {
+        color: #a0aabf;
         text-style: bold;
+        height: 1;
     }
     SnippetItem > .item-meta {
-        color: $text-muted;
+        color: #3b3f5c;
+        height: 1;
     }
     """
 
@@ -36,37 +45,53 @@ class SnippetItem(ListItem):
         self.snippet = snippet
 
     def compose(self) -> ComposeResult:
-        pin = " 📌" if self.snippet.pinned else ""
-        yield Static(f"{self.snippet.title}{pin}", classes="item-title")
-        meta = f"[dim]{self.snippet.language}[/dim]"
+        pin = " [bold #bb9af7]\u2605[/bold #bb9af7]" if self.snippet.pinned else ""
+        yield Static(
+            f"[bold]{self.snippet.title}[/bold]{pin}",
+            markup=True,
+            classes="item-title",
+        )
+        lang = f"[#565f89]{self.snippet.language}[/#565f89]"
+        tags = ""
         if self.snippet.tags:
-            meta += f"  [dim cyan]{self.snippet.tags_display}[/dim cyan]"
-        yield Static(meta, markup=True, classes="item-meta")
+            tags = f"  [#73daca]{self.snippet.tags_display}[/#73daca]"
+        yield Static(lang + tags, markup=True, classes="item-meta")
 
 
 class SnippetList(Widget):
-    """Left-panel: searchable, navigable list of snippets."""
-
-    COMPONENT_CLASSES = {"snippet-list--empty"}
+    """Left-panel: navigable list of snippets."""
 
     DEFAULT_CSS = """
     SnippetList {
         width: 35%;
-        border-right: tall $panel;
+        min-width: 24;
+        border-right: tall #2a2c42;
+        background: #0d0f18;
+    }
+    SnippetList .panel-label {
+        height: 1;
+        background: #0a0b14;
+        color: #2a2c42;
+        padding: 0 2;
+        border-bottom: tall #1a1c2e;
     }
     SnippetList ListView {
         height: 1fr;
+        background: #0d0f18;
+        border: none;
+        padding: 0;
     }
     SnippetList .empty-label {
-        color: $text-muted;
+        color: #3b3f5c;
         text-align: center;
-        padding: 2;
+        padding: 4 2;
     }
     """
 
     snippets: reactive[list[Snippet]] = reactive([], layout=True)
 
     def compose(self) -> ComposeResult:
+        yield Static("SNIPPETS", classes="panel-label")
         yield ListView(id="list-view")
 
     def watch_snippets(self, snippets: list[Snippet]) -> None:
@@ -76,7 +101,7 @@ class SnippetList(Widget):
             for s in snippets:
                 lv.append(SnippetItem(s))
         else:
-            lv.append(ListItem(Static("No snippets found.", classes="empty-label")))
+            lv.append(ListItem(Static("no snippets found", classes="empty-label")))
 
     def highlighted_snippet(self) -> Snippet | None:
         lv: ListView = self.query_one("#list-view", ListView)

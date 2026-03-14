@@ -15,37 +15,81 @@ class EditScreen(ModalScreen[Snippet | None]):
     DEFAULT_CSS = """
     EditScreen {
         align: center middle;
+        background: #0d0f1880;
     }
     EditScreen > Vertical {
-        width: 80;
+        width: 84;
         height: 90%;
-        background: $surface;
-        border: thick $accent;
-        padding: 1 2;
+        background: #13141f;
+        border: tall #2a2c42;
+        padding: 1 3;
         overflow-y: auto;
     }
+    EditScreen .modal-title {
+        text-style: bold;
+        color: #7aa2f7;
+        padding: 0 0 1 0;
+        height: 2;
+    }
+    EditScreen .modal-divider {
+        height: 1;
+        color: #2a2c42;
+        padding: 0 0 1 0;
+    }
     EditScreen .form-label {
-        color: $text-muted;
+        color: #565f89;
+        height: 1;
         padding: 0 0 0 0;
     }
-    EditScreen Input, EditScreen Select {
+    EditScreen Input {
+        background: #0d0f18;
+        border: tall #2a2c42;
+        color: #c0caf5;
         margin-bottom: 1;
+    }
+    EditScreen Input:focus {
+        border: tall #7aa2f7;
+        background: #0a0b14;
+    }
+    EditScreen Select {
+        margin-bottom: 1;
+    }
+    EditScreen Select:focus {
+        border: tall #7aa2f7;
     }
     EditScreen TextArea {
         height: 14;
+        background: #0d0f18;
+        border: tall #2a2c42;
         margin-bottom: 1;
+    }
+    EditScreen TextArea:focus {
+        border: tall #7aa2f7;
     }
     EditScreen .btn-row {
         height: 3;
         align: right middle;
+        padding-top: 1;
     }
     EditScreen Button {
         margin-left: 1;
     }
-    EditScreen .modal-title {
-        text-style: bold;
-        color: $accent;
-        padding: 0 0 1 0;
+    EditScreen #btn-save {
+        background: #7aa2f7;
+        color: #0d0f18;
+        border: none;
+    }
+    EditScreen #btn-save:hover {
+        background: #5a82d7;
+    }
+    EditScreen #btn-cancel {
+        background: #252640;
+        color: #565f89;
+        border: none;
+    }
+    EditScreen #btn-cancel:hover {
+        background: #2a2c50;
+        color: #c0caf5;
     }
     """
 
@@ -62,37 +106,38 @@ class EditScreen(ModalScreen[Snippet | None]):
 
     def compose(self) -> ComposeResult:
         s = self._editing
-        title = "New Snippet" if self._is_new else "Edit Snippet"
+        verb = "new snippet" if self._is_new else "edit snippet"
         with Vertical():
-            yield Label(title, classes="modal-title")
+            yield Label(f"\u25c6  {verb}", classes="modal-title")
+            yield Label("\u2500" * 60, classes="modal-divider")
 
-            yield Label("Title *", classes="form-label")
+            yield Label("title", classes="form-label")
             yield Input(
                 value=s.title if s else "",
-                placeholder="e.g. Reverse a list in Python",
+                placeholder="e.g. reverse a list in Python",
                 id="input-title",
             )
 
-            yield Label("Language", classes="form-label")
+            yield Label("language", classes="form-label")
             options = [(lang, lang) for lang in SUPPORTED_LANGUAGES]
             current_lang = s.language if s else "text"
             yield Select(options, value=current_lang, id="input-language")
 
-            yield Label("Description", classes="form-label")
+            yield Label("description", classes="form-label")
             yield Input(
                 value=s.description if s else "",
-                placeholder="Optional short description",
+                placeholder="optional short description",
                 id="input-description",
             )
 
-            yield Label("Tags (space-separated)", classes="form-label")
+            yield Label("tags  (space-separated)", classes="form-label")
             yield Input(
                 value=" ".join(s.tags) if s else "",
                 placeholder="e.g. python list utils",
                 id="input-tags",
             )
 
-            yield Label("Code *", classes="form-label")
+            yield Label("code", classes="form-label")
             yield TextArea(
                 text=s.content if s else "",
                 language=None,
@@ -101,8 +146,8 @@ class EditScreen(ModalScreen[Snippet | None]):
             )
 
             with Horizontal(classes="btn-row"):
-                yield Button("Cancel", variant="default", id="btn-cancel")
-                yield Button("Save", variant="primary", id="btn-save")
+                yield Button("cancel", variant="default", id="btn-cancel")
+                yield Button("save", variant="primary", id="btn-save")
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "btn-cancel":
@@ -147,5 +192,12 @@ class EditScreen(ModalScreen[Snippet | None]):
             self._editing.tags = tags
             self.dismiss(self._editing)
         else:
-            self.dismiss(Snippet(title=title, content=content, language=language,
-                                  description=description, tags=tags))
+            self.dismiss(
+                Snippet(
+                    title=title,
+                    content=content,
+                    language=language,
+                    description=description,
+                    tags=tags,
+                )
+            )
