@@ -4,7 +4,7 @@ from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal, Vertical
 from textual.screen import Screen
-from textual.widgets import Footer, Header, Input, Label, ListView
+from textual.widgets import Header, Input, Label, ListView
 
 from snip.models.snippet import Snippet
 from snip.ui.widgets.snippet_list import SnippetItem, SnippetList
@@ -72,7 +72,6 @@ class MainScreen(Screen):
             yield SnippetList(id="snippet-list")
             yield SnippetPreview(id="snippet-preview")
         yield Label("", id="status-bar", classes="status-bar")
-        yield Footer()
 
     def on_mount(self) -> None:
         self._refresh_list()
