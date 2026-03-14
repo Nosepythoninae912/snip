@@ -37,9 +37,9 @@ dev = [
 snip = "snip.__main__:main"
 
 [project.urls]
-Homepage = "https://github.com/yourusername/snip"
-Repository = "https://github.com/yourusername/snip"
-Issues = "https://github.com/yourusername/snip/issues"
+Homepage = "https://github.com/phlx0/snip"
+Repository = "https://github.com/phlx0/snip"
+Issues = "https://github.com/phlx0/snip/issues"
 
 [tool.hatch.build.targets.wheel]
 packages = ["snip"]
