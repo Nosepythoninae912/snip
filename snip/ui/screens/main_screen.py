@@ -4,9 +4,10 @@ from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal, Vertical
 from textual.screen import Screen
-from textual.widgets import Footer, Header, Input, Label, ListView, Static
+from textual.widgets import Footer, Input, Label, ListView, Static
 
 from snip.models.snippet import Snippet
+from snip.ui.widgets.app_header import AppHeader
 from snip.ui.widgets.snippet_list import SnippetItem, SnippetList
 from snip.ui.widgets.snippet_preview import SnippetPreview
 
@@ -32,79 +33,8 @@ class MainScreen(Screen):
         Binding("q", "quit", "Quit"),
     ]
 
-    DEFAULT_CSS = """
-    MainScreen {
-        background: #0d0f18;
-        layers: base overlay;
-    }
-
-    /* ── search bar ─────────────────────────────────────────── */
-    MainScreen .search-bar {
-        height: 3;
-        background: #0a0b14;
-        border-bottom: tall #2a2c42;
-        padding: 0 2;
-        overflow: hidden;
-    }
-    MainScreen .search-label {
-        color: #7aa2f7;
-        width: auto;
-        min-width: 2;
-        padding: 1 1 1 0;
-        text-style: bold;
-    }
-    MainScreen Input {
-        border: none;
-        background: transparent;
-        color: #c0caf5;
-        height: 1;
-        padding: 1 0;
-        width: 1fr;
-        min-width: 8;
-    }
-    MainScreen Input:focus {
-        border: none;
-        background: transparent;
-    }
-
-    /* ── panels ─────────────────────────────────────────────── */
-    MainScreen .panels {
-        height: 1fr;
-        min-height: 4;
-    }
-
-    /* ── status bar ─────────────────────────────────────────── */
-    MainScreen .status-bar {
-        height: 1;
-        background: #0a0b14;
-        padding: 0 2;
-        color: #3b3f5c;
-        border-top: tall #2a2c42;
-    }
-
-    /* ── too-small overlay ──────────────────────────────────── */
-    MainScreen #too-small-overlay {
-        layer: overlay;
-        display: none;
-        width: 100%;
-        height: 100%;
-        background: #0d0f18;
-        align: center middle;
-    }
-    MainScreen #too-small-overlay Static {
-        color: #565f89;
-        text-align: center;
-        width: auto;
-    }
-    """
-
-    def __init__(self, db) -> None:  # type: ignore[override]
-        super().__init__()
-        self._db = db
-        self._query = ""
-
     def compose(self) -> ComposeResult:
-        yield Header(show_clock=True)
+        yield AppHeader()
         with Horizontal(classes="search-bar"):
             yield Label("/", classes="search-label")
             yield Input(placeholder="search snippets...", id="search-input")
@@ -125,7 +55,9 @@ class MainScreen(Screen):
         ).focus()
 
     def on_resize(self, event) -> None:  # type: ignore[override]
-        too_small = event.size.width < self.MIN_WIDTH or event.size.height < self.MIN_HEIGHT
+        too_small = (
+            event.size.width < self.MIN_WIDTH or event.size.height < self.MIN_HEIGHT
+        )
         self.query_one("#too-small-overlay").display = too_small
 
     # ------------------------------------------------------------------
@@ -155,6 +87,11 @@ class MainScreen(Screen):
     # ------------------------------------------------------------------
     # Events
     # ------------------------------------------------------------------
+
+    def __init__(self, db) -> None:  # type: ignore[override]
+        super().__init__()
+        self._db = db
+        self._query = ""
 
     def on_input_changed(self, event: Input.Changed) -> None:
         if event.input.id == "search-input":

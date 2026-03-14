@@ -12,87 +12,6 @@ from snip.models.snippet import Snippet, SUPPORTED_LANGUAGES
 class EditScreen(ModalScreen[Snippet | None]):
     """Modal form for creating or editing a snippet."""
 
-    DEFAULT_CSS = """
-    EditScreen {
-        align: center middle;
-        background: #0d0f1880;
-    }
-    EditScreen > Vertical {
-        width: 84;
-        height: 90%;
-        background: #13141f;
-        border: tall #2a2c42;
-        padding: 1 3;
-        overflow-y: auto;
-    }
-    EditScreen .modal-title {
-        text-style: bold;
-        color: #7aa2f7;
-        padding: 0 0 1 0;
-        height: 2;
-    }
-    EditScreen .modal-divider {
-        height: 1;
-        color: #2a2c42;
-        padding: 0 0 1 0;
-    }
-    EditScreen .form-label {
-        color: #565f89;
-        height: 1;
-        padding: 0 0 0 0;
-    }
-    EditScreen Input {
-        background: #0d0f18;
-        border: tall #2a2c42;
-        color: #c0caf5;
-        margin-bottom: 1;
-    }
-    EditScreen Input:focus {
-        border: tall #7aa2f7;
-        background: #0a0b14;
-    }
-    EditScreen Select {
-        margin-bottom: 1;
-    }
-    EditScreen Select:focus {
-        border: tall #7aa2f7;
-    }
-    EditScreen TextArea {
-        height: 14;
-        background: #0d0f18;
-        border: tall #2a2c42;
-        margin-bottom: 1;
-    }
-    EditScreen TextArea:focus {
-        border: tall #7aa2f7;
-    }
-    EditScreen .btn-row {
-        height: 3;
-        align: right middle;
-        padding-top: 1;
-    }
-    EditScreen Button {
-        margin-left: 1;
-    }
-    EditScreen #btn-save {
-        background: #7aa2f7;
-        color: #0d0f18;
-        border: none;
-    }
-    EditScreen #btn-save:hover {
-        background: #5a82d7;
-    }
-    EditScreen #btn-cancel {
-        background: #252640;
-        color: #565f89;
-        border: none;
-    }
-    EditScreen #btn-cancel:hover {
-        background: #2a2c50;
-        color: #c0caf5;
-    }
-    """
-
     BINDINGS = [
         Binding("escape", "cancel", "Cancel"),
         Binding("down", "next_field", show=False),
@@ -108,7 +27,11 @@ class EditScreen(ModalScreen[Snippet | None]):
         s = self._editing
         verb = "new snippet" if self._is_new else "edit snippet"
         with Vertical():
-            yield Label(f"\u25c6  {verb}", classes="modal-title")
+            yield Label(
+                f"[bold #7aa2f7]\u25c6[/bold #7aa2f7]  {verb}",
+                markup=True,
+                classes="modal-title",
+            )
             yield Label("\u2500" * 60, classes="modal-divider")
 
             yield Label("title", classes="form-label")
@@ -120,8 +43,11 @@ class EditScreen(ModalScreen[Snippet | None]):
 
             yield Label("language", classes="form-label")
             options = [(lang, lang) for lang in SUPPORTED_LANGUAGES]
-            current_lang = s.language if s else "text"
-            yield Select(options, value=current_lang, id="input-language")
+            yield Select(
+                options,
+                value=s.language if s else "text",
+                id="input-language",
+            )
 
             yield Label("description", classes="form-label")
             yield Input(
@@ -178,11 +104,11 @@ class EditScreen(ModalScreen[Snippet | None]):
             return
 
         lang_select: Select = self.query_one("#input-language", Select)
-        language = str(lang_select.value) if lang_select.value != Select.BLANK else "text"
-
+        language = (
+            str(lang_select.value) if lang_select.value != Select.BLANK else "text"
+        )
         description = self.query_one("#input-description", Input).value.strip()
-        tags_raw = self.query_one("#input-tags", Input).value.strip()
-        tags = [t for t in tags_raw.split() if t]
+        tags = [t for t in self.query_one("#input-tags", Input).value.strip().split() if t]
 
         if self._editing is not None:
             self._editing.title = title

@@ -1,0 +1,348 @@
+/* ═══════════════════════════════════════════════════════════════
+   snip.tcss  —  single source of truth for all visual styling
+   Palette (Tokyo Night):
+     bg:           #0d0f18   surface:      #0a0b14
+     panel:        #13141f   border:       #2a2c42
+     border-dim:   #1a1c2e   select-bg:    #131729
+     accent:       #7aa2f7   teal:         #73daca
+     purple:       #bb9af7   pill-bg:      #252640
+     text:         #c0caf5   text-hi:      #e0e7ff
+     text-mid:     #a0aabf   text-muted:   #565f89
+     text-dim:     #3b3f5c   text-ghost:   #2a2c42
+   ═══════════════════════════════════════════════════════════════ */
+
+
+/* ── Global ─────────────────────────────────────────────────── */
+
+Screen {
+    background: #0d0f18;
+    layers: base overlay;
+}
+
+
+/* ── AppHeader ──────────────────────────────────────────────── */
+
+AppHeader {
+    dock: top;
+    height: 1;
+    background: #0d0f18;
+    border-bottom: tall #2a2c42;
+    layout: horizontal;
+    padding: 0 2;
+}
+
+AppHeader #app-logo {
+    width: 1fr;
+    height: 1;
+}
+
+AppHeader #app-clock {
+    width: auto;
+    height: 1;
+}
+
+
+/* ── Footer ─────────────────────────────────────────────────── */
+
+Footer {
+    background: #13141f;
+    color: #565f89;
+    border-top: tall #2a2c42;
+}
+
+FooterKey {
+    background: #13141f;
+    color: #565f89;
+}
+
+FooterKey .footer-key--key {
+    color: #7aa2f7;
+    background: #252640;
+}
+
+FooterKey:hover .footer-key--key {
+    background: #7aa2f7;
+    color: #0d0f18;
+}
+
+
+/* ── MainScreen ─────────────────────────────────────────────── */
+
+/* search bar */
+MainScreen .search-bar {
+    height: 3;
+    background: #0a0b14;
+    border-bottom: tall #2a2c42;
+    padding: 0 2;
+    overflow: hidden;
+}
+
+MainScreen .search-label {
+    color: #7aa2f7;
+    text-style: bold;
+    width: auto;
+    min-width: 2;
+    padding: 1 1 1 0;
+}
+
+MainScreen Input {
+    background: transparent;
+    border: none;
+    color: #c0caf5;
+    height: 1;
+    min-width: 8;
+    padding: 1 0;
+    width: 1fr;
+}
+
+MainScreen Input:focus {
+    background: transparent;
+    border: none;
+}
+
+/* panels */
+MainScreen .panels {
+    height: 1fr;
+    min-height: 4;
+}
+
+/* status bar */
+MainScreen .status-bar {
+    height: 1;
+    background: #0a0b14;
+    border-top: tall #2a2c42;
+    color: #3b3f5c;
+    padding: 0 2;
+}
+
+/* too-small overlay */
+MainScreen #too-small-overlay {
+    layer: overlay;
+    display: none;
+    width: 100%;
+    height: 100%;
+    background: #0d0f18;
+    align: center middle;
+}
+
+MainScreen #too-small-overlay Static {
+    color: #565f89;
+    text-align: center;
+    width: auto;
+}
+
+
+/* ── SnippetList ─────────────────────────────────────────────── */
+
+SnippetList {
+    width: 33%;
+    min-width: 24;
+    background: #0d0f18;
+    border-right: tall #2a2c42;
+}
+
+SnippetList .panel-label {
+    height: 1;
+    background: #0a0b14;
+    border-bottom: tall #1a1c2e;
+    color: #2a2c42;
+    padding: 0 2;
+}
+
+SnippetList ListView {
+    background: #0d0f18;
+    border: none;
+    height: 1fr;
+    padding: 0;
+}
+
+SnippetList .empty-label {
+    color: #3b3f5c;
+    padding: 4 2;
+    text-align: center;
+}
+
+
+/* ── SnippetItem ─────────────────────────────────────────────── */
+
+SnippetItem {
+    background: #0d0f18;
+    border-bottom: tall #1a1c2e;
+    height: 4;
+    padding: 1 2;
+}
+
+SnippetItem:hover {
+    background: #12131e;
+}
+
+SnippetItem.-highlighted {
+    background: #131729;
+    border-left: tall #7aa2f7;
+    padding-left: 1;
+}
+
+SnippetItem.-highlighted .item-title {
+    color: #e0e7ff;
+}
+
+SnippetItem .item-title {
+    color: #a0aabf;
+    height: 1;
+    text-style: bold;
+}
+
+SnippetItem .item-meta {
+    color: #3b3f5c;
+    height: 1;
+}
+
+
+/* ── SnippetPreview ──────────────────────────────────────────── */
+
+SnippetPreview {
+    background: #0d0f18;
+    overflow-y: auto;
+    padding: 1 2;
+    width: 1fr;
+}
+
+SnippetPreview .preview-pin {
+    color: #bb9af7;
+    height: 1;
+}
+
+SnippetPreview .preview-title {
+    color: #e0e7ff;
+    height: 1;
+    padding: 0 0 1 0;
+    text-style: bold;
+}
+
+SnippetPreview .preview-description {
+    color: #565f89;
+    height: 1;
+    padding: 0 0 1 0;
+}
+
+SnippetPreview .preview-tags {
+    color: #73daca;
+    height: 1;
+    padding: 0 0 1 0;
+}
+
+SnippetPreview .preview-code-wrap {
+    background: #0a0b14;
+    border: tall #2a2c42;
+    margin: 0 0 1 0;
+    padding: 0 1;
+}
+
+SnippetPreview .preview-meta {
+    color: #3b3f5c;
+    height: 1;
+    padding: 1 0 0 0;
+}
+
+SnippetPreview .preview-empty {
+    color: #2a2c42;
+    padding: 6 2;
+    text-align: center;
+}
+
+
+/* ── EditScreen ──────────────────────────────────────────────── */
+
+EditScreen {
+    align: center middle;
+    background: #0d0f1880;
+}
+
+EditScreen > Vertical {
+    background: #13141f;
+    border: tall #2a2c42;
+    height: 90%;
+    overflow-y: auto;
+    padding: 1 3;
+    width: 84;
+}
+
+EditScreen .modal-title {
+    color: #7aa2f7;
+    height: 2;
+    padding: 0 0 1 0;
+    text-style: bold;
+}
+
+EditScreen .modal-divider {
+    color: #2a2c42;
+    height: 1;
+    padding: 0 0 1 0;
+}
+
+EditScreen .form-label {
+    color: #565f89;
+    height: 1;
+}
+
+EditScreen Input {
+    background: #0d0f18;
+    border: tall #2a2c42;
+    color: #c0caf5;
+    margin-bottom: 1;
+}
+
+EditScreen Input:focus {
+    background: #0a0b14;
+    border: tall #7aa2f7;
+}
+
+EditScreen Select {
+    margin-bottom: 1;
+}
+
+EditScreen Select:focus {
+    border: tall #7aa2f7;
+}
+
+EditScreen TextArea {
+    background: #0d0f18;
+    border: tall #2a2c42;
+    height: 14;
+    margin-bottom: 1;
+}
+
+EditScreen TextArea:focus {
+    border: tall #7aa2f7;
+}
+
+EditScreen .btn-row {
+    align: right middle;
+    height: 3;
+    padding-top: 1;
+}
+
+EditScreen Button {
+    margin-left: 1;
+}
+
+EditScreen #btn-save {
+    background: #7aa2f7;
+    border: none;
+    color: #0d0f18;
+}
+
+EditScreen #btn-save:hover {
+    background: #5a82d7;
+}
+
+EditScreen #btn-cancel {
+    background: #252640;
+    border: none;
+    color: #565f89;
+}
+
+EditScreen #btn-cancel:hover {
+    background: #2a2c50;
+    color: #c0caf5;
+}
