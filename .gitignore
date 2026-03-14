@@ -22,5 +22,9 @@ coverage.xml
 *.swp
 *.swo
 
+# SQLite databases (don't commit personal snippet data)
+*.db
+*.sqlite
+
 # macOS
 .DS_Store
