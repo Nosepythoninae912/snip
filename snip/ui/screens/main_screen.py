@@ -4,7 +4,7 @@ from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal, Vertical
 from textual.screen import Screen
-from textual.widgets import Header, Input, Label, ListView
+from textual.widgets import Header, Input, Label, ListView, Static
 
 from snip.models.snippet import Snippet
 from snip.ui.widgets.snippet_list import SnippetItem, SnippetList
@@ -14,9 +14,14 @@ from snip.ui.widgets.snippet_preview import SnippetPreview
 class MainScreen(Screen):
     """The primary TUI screen."""
 
+    MIN_WIDTH = 60
+    MIN_HEIGHT = 12
+
     BINDINGS = [
         Binding("j", "move_down", "Down", show=False),
         Binding("k", "move_up", "Up", show=False),
+        Binding("down", "move_down", "Down", show=False, priority=True),
+        Binding("up", "move_up", "Up", show=False, priority=True),
         Binding("n", "new_snippet", "New"),
         Binding("e", "edit_snippet", "Edit"),
         Binding("d", "delete_snippet", "Delete"),
@@ -30,6 +35,7 @@ class MainScreen(Screen):
     DEFAULT_CSS = """
     MainScreen {
         background: $surface;
+        layers: base overlay;
     }
     MainScreen .search-bar {
         height: 3;
@@ -59,6 +65,20 @@ class MainScreen(Screen):
     }
     MainScreen .panels {
         height: 1fr;
+        min-height: 4;
+    }
+    MainScreen #too-small-overlay {
+        layer: overlay;
+        display: none;
+        width: 100%;
+        height: 100%;
+        background: $surface;
+        align: center middle;
+    }
+    MainScreen #too-small-overlay Static {
+        color: $warning;
+        text-align: center;
+        width: auto;
     }
     """
 
@@ -76,10 +96,18 @@ class MainScreen(Screen):
             yield SnippetList(id="snippet-list")
             yield SnippetPreview(id="snippet-preview")
         yield Label("", id="status-bar", classes="status-bar")
+        with Vertical(id="too-small-overlay"):
+            yield Static(
+                f"Terminal too small\nMinimum size: {self.MIN_WIDTH}\u00d7{self.MIN_HEIGHT}"
+            )
 
     def on_mount(self) -> None:
         self._refresh_list()
         self.query_one("#search-input", Input).focus()
+
+    def on_resize(self, event) -> None:  # type: ignore[override]
+        too_small = event.size.width < self.MIN_WIDTH or event.size.height < self.MIN_HEIGHT
+        self.query_one("#too-small-overlay").display = too_small
 
     # ------------------------------------------------------------------
     # List / search helpers
@@ -90,7 +118,6 @@ class MainScreen(Screen):
         sl: SnippetList = self.query_one("#snippet-list", SnippetList)
         sl.snippets = snippets
 
-        # Auto-select first item and show preview
         if snippets:
             self._update_preview(snippets[0])
         else:
@@ -102,11 +129,10 @@ class MainScreen(Screen):
         self.query_one("#snippet-preview", SnippetPreview).snippet = snippet
 
     def _update_status(self, shown: int, total: int) -> None:
-        msg = f"  {shown}/{total} snippet{'s' if total != 1 else ''}"
-        if self._query:
-            msg += f'  ·  filter: "{self._query}"'
-        msg += "  ·  [n]ew  [e]dit  [d]elete  [y]ank  [p]in  [/]search  [q]uit"
-        self.query_one("#status-bar", Label).update(msg)
+        count = f"  {shown}/{total} snippet{'s' if total != 1 else ''}"
+        filt = f'  \u00b7  filter: "{self._query}"' if self._query else ""
+        hints = "  \u00b7  n:new  e:edit  d:del  y:copy  p:pin  /:search  q:quit"
+        self.query_one("#status-bar", Label).update(count + filt + hints)
 
     # ------------------------------------------------------------------
     # Events
@@ -143,7 +169,9 @@ class MainScreen(Screen):
             self._query = ""
             self._refresh_list()
         else:
-            self.query_one("#snippet-list", SnippetList).query_one("#list-view", ListView).focus()
+            self.query_one("#snippet-list", SnippetList).query_one(
+                "#list-view", ListView
+            ).focus()
 
     def action_new_snippet(self) -> None:
         from snip.ui.screens.edit_screen import EditScreen
@@ -188,7 +216,7 @@ class MainScreen(Screen):
         if copy_to_clipboard(snippet.content):
             self._flash(f"Copied '{snippet.title}' to clipboard")
         else:
-            self._flash("Clipboard not available – install pyperclip")
+            self._flash("Clipboard not available \u2013 install pyperclip")
 
     def action_pin_snippet(self) -> None:
         snippet = self.query_one("#snippet-list", SnippetList).highlighted_snippet()
@@ -203,4 +231,4 @@ class MainScreen(Screen):
         self.app.exit()
 
     def _flash(self, msg: str) -> None:
-        self.query_one("#status-bar", Label).update(f"  ✓ {msg}")
+        self.query_one("#status-bar", Label).update(f"  \u2713 {msg}")
