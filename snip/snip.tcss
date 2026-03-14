@@ -65,7 +65,7 @@ FooterKey:hover .footer-key--key {
 
 /* search bar */
 MainScreen .search-bar {
-    height: 3;
+    height: 2;
     background: #0a0b14;
     border-bottom: tall #2a2c42;
     padding: 0 2;
@@ -77,7 +77,7 @@ MainScreen .search-label {
     text-style: bold;
     width: auto;
     min-width: 2;
-    padding: 1 1 1 0;
+    padding: 0 1 0 0;
 }
 
 MainScreen Input {
@@ -86,13 +86,17 @@ MainScreen Input {
     color: #c0caf5;
     height: 1;
     min-width: 8;
-    padding: 1 0;
+    padding: 0;
     width: 1fr;
 }
 
 MainScreen Input:focus {
     background: transparent;
     border: none;
+}
+
+MainScreen Input .input--placeholder {
+    color: #3b3f5c;
 }
 
 /* panels */
@@ -141,7 +145,7 @@ SnippetList .panel-label {
     height: 2;
     background: #0a0b14;
     border-bottom: tall #1a1c2e;
-    color: #565f89;
+    color: #2a2c42;
     padding: 0 2;
 }
 

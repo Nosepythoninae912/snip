@@ -16,9 +16,9 @@ class SnippetItem(ListItem):
         self.snippet = snippet
 
     def compose(self) -> ComposeResult:
-        pin = " [bold #bb9af7]\u2605[/bold #bb9af7]" if self.snippet.pinned else ""
+        pin = "[bold #bb9af7]\u2605 [/bold #bb9af7]" if self.snippet.pinned else ""
         yield Static(
-            f"[bold]{self.snippet.title}[/bold]{pin}",
+            f"{pin}[bold]{self.snippet.title}[/bold]",
             markup=True,
             classes="item-title",
         )

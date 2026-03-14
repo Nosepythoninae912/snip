@@ -10,10 +10,18 @@ def main() -> None:
     if len(args) == 2 and args[0] == "--db":
         db_path = Path(args[1])
 
-    from snip.app import SnipApp, _DEFAULT_DB
+    try:
+        from snip.app import SnipApp, _DEFAULT_DB
 
-    app = SnipApp(db_path=db_path or _DEFAULT_DB)
-    app.run()
+        app = SnipApp(db_path=db_path or _DEFAULT_DB)
+        app.run()
+    except ImportError as e:
+        print(f"snip: missing dependency — {e}", file=sys.stderr)
+        print("Run: pip install textual pyperclip", file=sys.stderr)
+        sys.exit(1)
+    except Exception as e:
+        print(f"snip: failed to start — {e}", file=sys.stderr)
+        sys.exit(1)
 
 
 if __name__ == "__main__":
