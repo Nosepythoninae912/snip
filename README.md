@@ -187,9 +187,14 @@ make clean      # remove build artefacts and .venv
 
 ## Docs
 
+- [CLI reference](docs/cli-reference.md)
+- [Keybindings](docs/keybindings.md)
 - [fzf integration](docs/fzf-integration.md)
-- [Dotfile sync](docs/dotfile-sync.md)
+- [tmux integration](docs/tmux-integration.md)
 - [Shell completion](docs/shell-completion.md)
+- [Scripting with snip](docs/scripting.md)
+- [Dotfile sync](docs/dotfile-sync.md)
+- [Tips & tricks](docs/tips-and-tricks.md)
 
 ---
 
