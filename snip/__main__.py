@@ -328,6 +328,39 @@ def main() -> None:
     try:
         if not args:
             _run_tui(db_path)
+        elif args[0] in ("--help", "-h"):
+            print(f"""\
+snip {VERSION} — terminal snippet vault
+
+USAGE
+  snip                          open the TUI
+  snip <query>                  copy a snippet to clipboard
+  snip run <query>              run a snippet as a shell command
+
+OPTIONS
+  --list [tag]                  print all titles (optionally filter by tag)
+  --add <file>                  save a file as a snippet
+  --delete <query>              delete a snippet
+  --json <query>                output snippet as JSON
+  --export                      dump all snippets to JSON (stdout)
+  --import <file|->>            import snippets from JSON
+  --from-history                pick a shell history command and save it
+  --db <path>                   use a custom database file
+  -q, --quiet                   suppress informational output
+  --version                     show version
+  --help                        show this help
+
+SHELL COMPLETION
+  eval "$(snip init zsh)"       add to ~/.zshrc
+  eval "$(snip init bash)"      add to ~/.bashrc
+
+EXAMPLES
+  snip ports                    copy 'ports' snippet to clipboard
+  snip run deploy               run 'deploy' snippet in shell
+  snip --list docker            list snippets tagged #docker
+  snip --list | fzf | xargs snip
+  snip --export > backup.json
+""")
         elif args[0] in ("--version", "-v"):
             print(f"snip {VERSION}")
         elif args[0] == "--list":
