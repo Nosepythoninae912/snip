@@ -46,12 +46,6 @@ curl -fsSL https://raw.githubusercontent.com/phlx0/snip/main/install.sh | bash
 
 Creates an isolated virtualenv at `~/.local/share/snip`, drops a `snip` launcher at `~/.local/bin/snip`, and patches your shell config if needed. Open a new terminal and you're done.
 
-### PyPI
-
-```bash
-pip install snip-tui
-```
-
 ### From source
 
 ```bash

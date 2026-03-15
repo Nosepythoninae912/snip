@@ -60,7 +60,11 @@ info "installing snip"
 if [[ -n "$REPO_DIR" ]]; then
   "$VENV_DIR/bin/pip" install --quiet -e "$REPO_DIR"
 else
-  "$VENV_DIR/bin/pip" install --quiet snip-tui
+  TMP_DIR=$(mktemp -d)
+  info "cloning snip repository"
+  git clone --quiet --depth=1 https://github.com/phlx0/snip "$TMP_DIR"
+  "$VENV_DIR/bin/pip" install --quiet "$TMP_DIR"
+  rm -rf "$TMP_DIR"
 fi
 ok "package installed"
 
