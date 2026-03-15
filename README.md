@@ -4,9 +4,10 @@
 
 # ◆ snip
 
-**A terminal snippet manager that lives where you work.**
+**Your code snippets. In your terminal. Always.**
 
-Store, search, and yank code without leaving your shell.
+Stop Googling the same one-liners. Stop losing clever commands to closed tabs.<br/>
+snip is a fast, local, offline snippet vault that lives where you actually work.
 
 <br/>
 
@@ -25,42 +26,39 @@ Store, search, and yank code without leaving your shell.
 
 ---
 
-## The problem
+## Why snip?
 
 You write a clever one-liner. You close the terminal. Three weeks later you're Googling the same thing again.
 
-**snip** is your personal snippet vault — local, offline, instantly searchable from your terminal. No browser tabs, no account, no sync drama.
+**snip** fixes that. It's a personal snippet vault that runs entirely in your terminal — local, offline, zero-account, instantly searchable. Open it, find what you need, yank it to your clipboard, and get back to work.
+
+No Electron. No browser. No sync drama. Just your snippets, always there.
 
 ---
 
 ## Install
 
-### Linux / macOS — one-liner
+### One-liner (Linux / macOS)
 
 ```bash
-git clone https://github.com/phlx0/snip
-cd snip
-bash install.sh
+git clone https://github.com/phlx0/snip && cd snip && bash install.sh
 ```
 
-The script creates an isolated virtualenv at `~/.local/share/snip`, installs the package, drops a launcher at `~/.local/bin/snip`, and patches your shell config if that directory isn't already on `$PATH`.
+Creates an isolated virtualenv at `~/.local/share/snip`, drops a `snip` launcher at `~/.local/bin/snip`, and patches your shell config if needed. Open a new terminal and you're done.
 
-### From PyPI
+### PyPI
 
 ```bash
 pip install snip-tui
 ```
 
-### From source (dev)
+### From source
 
 ```bash
 git clone https://github.com/phlx0/snip
 cd snip
-make dev          # creates .venv and installs with dev extras
-make run          # launch without activating the venv
-# or:
-source .venv/bin/activate
-snip
+make dev    # creates .venv + installs with dev extras
+make run    # launch
 ```
 
 ---
@@ -68,10 +66,20 @@ snip
 ## Usage
 
 ```bash
-snip                              # open the TUI
-snip --db ~/Dropbox/snippets.db   # custom db path — easy cloud sync
-python -m snip                    # always works, no PATH required
+snip                        # open the TUI
+snip ports                  # copy snippet titled "ports" to clipboard
+snip --list                 # print all snippet titles (great for fzf)
+snip --exec deploy          # run a snippet as a shell command
+snip --db ~/sync/snip.db   # use a custom db — easy cloud sync
 ```
+
+### fzf integration
+
+```bash
+snip --list | fzf | xargs snip
+```
+
+Pick any snippet interactively with fuzzy search, pipe it straight to your clipboard.
 
 ---
 
@@ -79,6 +87,9 @@ python -m snip                    # always works, no PATH required
 
 | | |
 |---|---|
+| **Instant CLI lookup** | `snip <query>` copies a snippet without opening the TUI |
+| **Run as command** | `snip --exec <query>` runs a snippet directly in your shell |
+| **fzf-friendly** | `snip --list` prints titles one per line — pipe into anything |
 | **Syntax highlighting** | Tokyo Night palette via a custom Pygments style across 20+ languages |
 | **Live search** | Filters across title, description, tags, and language as you type |
 | **Clipboard copy** | Press `y` to yank a snippet straight to your clipboard |
@@ -113,7 +124,7 @@ snip/
 ├── assets/
 │   └── hero.svg
 ├── snip/
-│   ├── __main__.py          # entry point
+│   ├── __main__.py          # entry point + CLI
 │   ├── app.py               # Textual app + demo seeding
 │   ├── snip.tcss            # all styling (Tokyo Night palette)
 │   ├── models/

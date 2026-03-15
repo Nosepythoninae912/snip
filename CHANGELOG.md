@@ -11,6 +11,16 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.2.0] — 2026-03-15
+
+### Added
+- `snip <query>` — non-interactive snippet lookup: finds a snippet by title, prints content to stdout, and copies it to the clipboard. Exact title match is preferred; falls back to substring match. Multiple matches list candidates.
+- `snip --list` — prints all snippet titles one per line, designed for piping into `fzf` or other tools
+- `snip --exec <query>` — runs a matched snippet directly as a shell command; exits with the command's return code
+- fzf one-liner in README: `snip --list | fzf | xargs snip`
+
+---
+
 ## [0.1.0] — 2026-03-14
 
 ### Added
@@ -26,5 +36,6 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `install.sh` one-liner installer for Linux / macOS
 - `--db` flag for a custom database path (easy Dropbox / iCloud sync)
 
-[Unreleased]: https://github.com/phlx0/snip/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/phlx0/snip/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/phlx0/snip/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/phlx0/snip/releases/tag/v0.1.0
