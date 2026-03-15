@@ -1,3 +1,4 @@
+import subprocess
 import sys
 from pathlib import Path
 
@@ -7,13 +8,19 @@ def _run_tui(db_path: Path) -> None:
     SnipApp(db_path=db_path).run()
 
 
-def _run_copy(query: str, db_path: Path) -> None:
+def _run_list(db_path: Path) -> None:
     from snip.storage.database import Database
-    from snip.utils.clipboard import copy_to_clipboard
+
+    db = Database(db_path)
+    for s in db.get_all():
+        print(s.title)
+
+
+def _resolve(query: str, db_path: Path):
+    from snip.storage.database import Database
 
     db = Database(db_path)
     snippets = db.get_all()
-
     q = query.lower()
     exact = [s for s in snippets if s.title.lower() == q]
     matches = exact or [s for s in snippets if q in s.title.lower()]
@@ -28,10 +35,22 @@ def _run_copy(query: str, db_path: Path) -> None:
             print(f"  • {s.title}", file=sys.stderr)
         sys.exit(1)
 
-    snippet = matches[0]
+    return matches[0]
+
+
+def _run_copy(query: str, db_path: Path) -> None:
+    from snip.utils.clipboard import copy_to_clipboard
+
+    snippet = _resolve(query, db_path)
     print(snippet.content)
     if copy_to_clipboard(snippet.content):
         print(f"Copied '{snippet.title}' to clipboard.", file=sys.stderr)
+
+
+def _run_exec(query: str, db_path: Path) -> None:
+    snippet = _resolve(query, db_path)
+    result = subprocess.run(snippet.content, shell=True)
+    sys.exit(result.returncode)
 
 
 def main() -> None:
@@ -46,7 +65,12 @@ def main() -> None:
         args = args[2:]
 
     try:
-        if args:
+        if args and args[0] == "--list":
+            _run_list(db_path)
+        elif len(args) >= 2 and args[0] == "--exec":
+            query = " ".join(args[1:])
+            _run_exec(query, db_path)
+        elif args:
             query = " ".join(args)
             _run_copy(query, db_path)
         else:
