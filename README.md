@@ -187,14 +187,16 @@ make clean      # remove build artefacts and .venv
 
 ## Docs
 
-- [CLI reference](docs/cli-reference.md)
-- [Keybindings](docs/keybindings.md)
-- [fzf integration](docs/fzf-integration.md)
-- [tmux integration](docs/tmux-integration.md)
-- [Shell completion](docs/shell-completion.md)
-- [Scripting with snip](docs/scripting.md)
-- [Dotfile sync](docs/dotfile-sync.md)
-- [Tips & tricks](docs/tips-and-tricks.md)
+Full documentation is available on the [**wiki**](https://github.com/phlx0/snip/wiki).
+
+- [CLI reference](https://github.com/phlx0/snip/wiki/CLI-Reference)
+- [Keybindings](https://github.com/phlx0/snip/wiki/Keybindings)
+- [fzf integration](https://github.com/phlx0/snip/wiki/FZF-Integration)
+- [tmux integration](https://github.com/phlx0/snip/wiki/Tmux-Integration)
+- [Shell completion](https://github.com/phlx0/snip/wiki/Shell-Completion)
+- [Scripting with snip](https://github.com/phlx0/snip/wiki/Scripting)
+- [Dotfile sync](https://github.com/phlx0/snip/wiki/Dotfile-Sync)
+- [Tips & tricks](https://github.com/phlx0/snip/wiki/Tips-and-Tricks)
 
 ---
 
