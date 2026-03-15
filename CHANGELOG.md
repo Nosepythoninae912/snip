@@ -11,6 +11,18 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.4.0] — 2026-03-15
+
+### Added
+- `snip --delete <query>` — delete a snippet by title without opening the TUI
+- `snip --json <query>` — output full snippet metadata as JSON for scripting
+- `snip --list <tag>` — filter listed titles by tag
+- `snip --version` / `-v` — print version string
+- `snip -q` / `--quiet` — suppress informational stderr output for clean scripting
+- `snip init zsh` / `snip init bash` — print shell completion scripts; activate with `eval "$(snip init zsh)"`; tab-completes snippet titles and all flags
+
+---
+
 ## [0.3.0] — 2026-03-15
 
 ### Added

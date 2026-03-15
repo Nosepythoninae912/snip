@@ -4,17 +4,30 @@ import subprocess
 import sys
 from pathlib import Path
 
+VERSION = "0.3.0"
+
+# Set to True by -q / --quiet to suppress informational stderr messages
+_quiet = False
+
+
+def _info(msg: str) -> None:
+    if not _quiet:
+        print(msg, file=sys.stderr)
+
 
 def _run_tui(db_path: Path) -> None:
     from snip.app import SnipApp
     SnipApp(db_path=db_path).run()
 
 
-def _run_list(db_path: Path) -> None:
+def _run_list(db_path: Path, tag: str = "") -> None:
     from snip.storage.database import Database
 
     db = Database(db_path)
-    for s in db.get_all():
+    snippets = db.get_all()
+    if tag:
+        snippets = [s for s in snippets if tag.lower() in [t.lower() for t in s.tags]]
+    for s in snippets:
         print(s.title)
 
 
@@ -46,13 +59,35 @@ def _run_copy(query: str, db_path: Path) -> None:
     snippet = _resolve(query, db_path)
     print(snippet.content)
     if copy_to_clipboard(snippet.content):
-        print(f"Copied '{snippet.title}' to clipboard.", file=sys.stderr)
+        _info(f"Copied '{snippet.title}' to clipboard.")
 
 
 def _run_exec(query: str, db_path: Path) -> None:
     snippet = _resolve(query, db_path)
     result = subprocess.run(snippet.content, shell=True)
     sys.exit(result.returncode)
+
+
+def _run_json(query: str, db_path: Path) -> None:
+    snippet = _resolve(query, db_path)
+    print(json.dumps({
+        "id": snippet.id,
+        "title": snippet.title,
+        "content": snippet.content,
+        "language": snippet.language,
+        "description": snippet.description,
+        "tags": snippet.tags,
+        "pinned": snippet.pinned,
+    }, indent=2))
+
+
+def _run_delete(query: str, db_path: Path) -> None:
+    from snip.storage.database import Database
+
+    snippet = _resolve(query, db_path)
+    db = Database(db_path)
+    db.delete(snippet.id)
+    _info(f"Deleted '{snippet.title}'.")
 
 
 def _lang_from_ext(path: Path) -> str:
@@ -86,7 +121,7 @@ def _run_add(file_path: str, db_path: Path) -> None:
 
     db = Database(db_path)
     snippet = db.create(Snippet(title=title, content=content, language=language))
-    print(f"Saved '{snippet.title}' (id {snippet.id}, language: {language})")
+    _info(f"Saved '{snippet.title}' (id {snippet.id}, language: {language})")
 
 
 def _run_export(db_path: Path) -> None:
@@ -139,16 +174,14 @@ def _run_import(file_path: str, db_path: Path) -> None:
             tags=item.get("tags", []),
             pinned=item.get("pinned", False),
         ))
-        print(f"  imported '{item['title']}'")
+        _info(f"  imported '{item['title']}'")
 
-    print(f"\nDone. {len(data)} snippet(s) imported.")
+    _info(f"\nDone. {len(data)} snippet(s) imported.")
 
 
 def _read_history() -> list[str]:
-    """Read shell history, returning deduplicated commands, most recent first."""
     shell = os.environ.get("SHELL", "")
     candidates = []
-
     if "zsh" in shell:
         candidates.append(Path.home() / ".zsh_history")
     candidates.append(Path.home() / ".bash_history")
@@ -159,20 +192,18 @@ def _read_history() -> list[str]:
         lines = hist_file.read_text(errors="replace").splitlines()
         cmds = []
         for line in lines:
-            # zsh extended history format: `: timestamp:elapsed;command`
             if line.startswith(":") and ";" in line:
                 line = line.split(";", 1)[1]
             line = line.strip()
             if line and not line.startswith("#"):
                 cmds.append(line)
-        # deduplicate preserving last occurrence (most recent)
         seen: set[str] = set()
         deduped = []
         for cmd in reversed(cmds):
             if cmd not in seen:
                 seen.add(cmd)
                 deduped.append(cmd)
-        return deduped  # most recent first
+        return deduped
 
     return []
 
@@ -186,7 +217,6 @@ def _run_from_history(db_path: Path) -> None:
         print("snip: no shell history found", file=sys.stderr)
         sys.exit(1)
 
-    # Prefer fzf for selection
     if subprocess.run(["which", "fzf"], capture_output=True).returncode == 0:
         result = subprocess.run(
             ["fzf", "--prompt=pick a command > ", "--height=40%", "--reverse"],
@@ -199,7 +229,6 @@ def _run_from_history(db_path: Path) -> None:
             sys.exit(0)
         command = result.stdout.strip()
     else:
-        # Fallback: numbered list
         preview = history[:50]
         for i, cmd in enumerate(preview, 1):
             print(f"  {i:>3}.  {cmd}")
@@ -226,25 +255,84 @@ def _run_from_history(db_path: Path) -> None:
 
     db = Database(db_path)
     snippet = db.create(Snippet(title=title, content=command, language="bash"))
-    print(f"\nSaved '{snippet.title}' (id {snippet.id})")
+    _info(f"\nSaved '{snippet.title}' (id {snippet.id})")
+
+
+_BASH_COMPLETION = """\
+_snip_complete() {
+    local cur="${COMP_WORDS[COMP_CWORD]}"
+    local flags="--list --add --export --import --from-history --delete --json --version --quiet --db run"
+    if [[ COMP_CWORD -eq 1 ]]; then
+        local titles
+        titles=$(snip --list 2>/dev/null)
+        COMPREPLY=($(compgen -W "$flags $titles" -- "$cur"))
+    fi
+}
+complete -F _snip_complete snip
+"""
+
+_ZSH_COMPLETION = """\
+#compdef snip
+_snip() {
+    local -a titles
+    titles=(${(f)"$(snip --list 2>/dev/null)"})
+    local -a flags
+    flags=(
+        '--list:print all snippet titles'
+        '--add:save a file as a snippet'
+        '--export:export all snippets to JSON'
+        '--import:import snippets from JSON'
+        '--from-history:save a command from shell history'
+        '--delete:delete a snippet by title'
+        '--json:output snippet as JSON'
+        '--version:show version'
+        '--quiet:suppress informational output'
+        '--db:use a custom database path'
+        'run:run a snippet as a shell command'
+    )
+    _arguments '1: :(${flags[@]} ${titles[@]})'
+}
+_snip
+"""
+
+
+def _run_init(shell: str) -> None:
+    if shell == "bash":
+        print(_BASH_COMPLETION)
+        _info("# Add to ~/.bashrc:  eval \"$(snip init bash)\"")
+    elif shell == "zsh":
+        print(_ZSH_COMPLETION)
+        _info("# Add to ~/.zshrc:   eval \"$(snip init zsh)\"")
+    else:
+        print(f"snip: unknown shell '{shell}' — supported: bash, zsh", file=sys.stderr)
+        sys.exit(1)
 
 
 def main() -> None:
+    global _quiet
     from snip.app import _DEFAULT_DB
 
     db_path: Path = _DEFAULT_DB
     args = sys.argv[1:]
 
-    # Strip --db <path> from args
+    # Strip --db <path>
     if len(args) >= 2 and args[0] == "--db":
         db_path = Path(args[1])
         args = args[2:]
 
+    # Strip -q / --quiet
+    if "-q" in args or "--quiet" in args:
+        _quiet = True
+        args = [a for a in args if a not in ("-q", "--quiet")]
+
     try:
         if not args:
             _run_tui(db_path)
+        elif args[0] in ("--version", "-v"):
+            print(f"snip {VERSION}")
         elif args[0] == "--list":
-            _run_list(db_path)
+            tag = args[1] if len(args) >= 2 else ""
+            _run_list(db_path, tag)
         elif args[0] in ("--exec", "run") and len(args) >= 2:
             _run_exec(" ".join(args[1:]), db_path)
         elif args[0] == "--add" and len(args) >= 2:
@@ -255,6 +343,12 @@ def main() -> None:
             _run_import(args[1], db_path)
         elif args[0] == "--from-history":
             _run_from_history(db_path)
+        elif args[0] == "--delete" and len(args) >= 2:
+            _run_delete(" ".join(args[1:]), db_path)
+        elif args[0] == "--json" and len(args) >= 2:
+            _run_json(" ".join(args[1:]), db_path)
+        elif args[0] == "init" and len(args) >= 2:
+            _run_init(args[1])
         else:
             _run_copy(" ".join(args), db_path)
     except ImportError as e:

@@ -69,13 +69,30 @@ make run    # launch
 snip                          # open the TUI
 snip ports                    # copy snippet titled "ports" to clipboard
 snip run deploy               # run a snippet as a shell command
-snip --list                   # print all snippet titles (great for fzf)
+snip --list                   # print all snippet titles
+snip --list docker            # filter titles by tag
 snip --add myscript.sh        # save a file as a snippet
+snip --delete ports           # delete a snippet without opening the TUI
+snip --json ports             # output snippet as JSON (great for scripting)
 snip --export > backup.json   # export all snippets to JSON
 snip --import backup.json     # import snippets from JSON
 snip --from-history           # pick a command from shell history and save it
+snip --version                # show version
+snip -q ports                 # suppress informational output (clean for scripts)
 snip --db ~/sync/snip.db      # use a custom db — easy cloud sync
 ```
+
+### Shell completion
+
+```bash
+# zsh — add to ~/.zshrc
+eval "$(snip init zsh)"
+
+# bash — add to ~/.bashrc
+eval "$(snip init bash)"
+```
+
+`snip <TAB>` will autocomplete snippet titles and flags.
 
 ### fzf integration
 
@@ -96,6 +113,9 @@ Pick any snippet interactively with fuzzy search, pipe it straight to your clipb
 | **Import from file** | `snip --add script.sh` saves any file as a snippet, language auto-detected |
 | **Export / import** | `snip --export` / `snip --import` — JSON backup, perfect for dotfiles |
 | **Shell history mining** | `snip --from-history` — pick a command from your history and save it |
+| **Tag filtering** | `snip --list docker` — filter titles by tag from the CLI |
+| **JSON output** | `snip --json <query>` — full snippet metadata as JSON for scripting |
+| **Shell completion** | `eval "$(snip init zsh)"` — tab-complete snippet titles and flags |
 | **fzf-friendly** | `snip --list` prints titles one per line — pipe into anything |
 | **Syntax highlighting** | Tokyo Night palette via a custom Pygments style across 20+ languages |
 | **Live search** | Filters across title, description, tags, and language as you type |
