@@ -11,6 +11,9 @@ snip is a fast, local, offline snippet vault that lives where you actually work.
 
 <br/>
 
+[![CI](https://github.com/phlx0/snip/actions/workflows/ci.yml/badge.svg)](https://github.com/phlx0/snip/actions/workflows/ci.yml)
+[![GitHub release](https://img.shields.io/github/v/release/phlx0/snip?style=flat-square&color=7aa2f7&label=version)](https://github.com/phlx0/snip/releases)
+[![GitHub stars](https://img.shields.io/github/stars/phlx0/snip?style=flat-square&color=f7c948)](https://github.com/phlx0/snip/stargazers)
 [![Python](https://img.shields.io/badge/python-3.10+-7aa2f7?style=flat-square&logo=python&logoColor=white)](https://www.python.org)
 [![License](https://img.shields.io/badge/license-MIT-73daca?style=flat-square)](LICENSE)
 [![Built with Textual](https://img.shields.io/badge/built%20with-Textual-bb9af7?style=flat-square)](https://github.com/Textualize/textual)
@@ -179,6 +182,14 @@ make test-cov   # run with coverage report
 make run        # launch the app
 make clean      # remove build artefacts and .venv
 ```
+
+---
+
+## Docs
+
+- [fzf integration](docs/fzf-integration.md)
+- [Dotfile sync](docs/dotfile-sync.md)
+- [Shell completion](docs/shell-completion.md)
 
 ---
 
