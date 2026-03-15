@@ -66,11 +66,15 @@ make run    # launch
 ## Usage
 
 ```bash
-snip                        # open the TUI
-snip ports                  # copy snippet titled "ports" to clipboard
-snip --list                 # print all snippet titles (great for fzf)
-snip --exec deploy          # run a snippet as a shell command
-snip --db ~/sync/snip.db   # use a custom db — easy cloud sync
+snip                          # open the TUI
+snip ports                    # copy snippet titled "ports" to clipboard
+snip run deploy               # run a snippet as a shell command
+snip --list                   # print all snippet titles (great for fzf)
+snip --add myscript.sh        # save a file as a snippet
+snip --export > backup.json   # export all snippets to JSON
+snip --import backup.json     # import snippets from JSON
+snip --from-history           # pick a command from shell history and save it
+snip --db ~/sync/snip.db      # use a custom db — easy cloud sync
 ```
 
 ### fzf integration
@@ -88,7 +92,10 @@ Pick any snippet interactively with fuzzy search, pipe it straight to your clipb
 | | |
 |---|---|
 | **Instant CLI lookup** | `snip <query>` copies a snippet without opening the TUI |
-| **Run as command** | `snip --exec <query>` runs a snippet directly in your shell |
+| **Run as command** | `snip run <query>` runs a snippet directly in your shell |
+| **Import from file** | `snip --add script.sh` saves any file as a snippet, language auto-detected |
+| **Export / import** | `snip --export` / `snip --import` — JSON backup, perfect for dotfiles |
+| **Shell history mining** | `snip --from-history` — pick a command from your history and save it |
 | **fzf-friendly** | `snip --list` prints titles one per line — pipe into anything |
 | **Syntax highlighting** | Tokyo Night palette via a custom Pygments style across 20+ languages |
 | **Live search** | Filters across title, description, tags, and language as you type |

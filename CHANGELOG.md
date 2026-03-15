@@ -11,6 +11,17 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.3.0] — 2026-03-15
+
+### Added
+- `snip run <query>` — cleaner alias for running a snippet as a shell command
+- `snip --add <file>` — save any file as a snippet; language auto-detected from extension
+- `snip --export` — dump all snippets to JSON on stdout (pipe to a file for dotfile backups)
+- `snip --import <file>` — bulk-import snippets from a JSON file (`-` to read from stdin)
+- `snip --from-history` — interactively pick a command from shell history (bash/zsh) and save it as a snippet; uses `fzf` if available, falls back to a numbered list
+
+---
+
 ## [0.2.0] — 2026-03-15
 
 ### Added
