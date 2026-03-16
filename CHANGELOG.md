@@ -9,6 +9,17 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+- Arrow-key navigation in the new/edit snippet form no longer gets stuck in the language selector
+- Navigating down from the title field opens the language dropdown automatically; navigating up from description also opens it
+- At the top of the language list, pressing up closes the dropdown and moves focus to the title field; at the bottom, pressing down closes it and moves to description
+- Arrow keys in the code field navigate lines normally; at the first line pressing up moves to tags, at the last line pressing down moves to the cancel/save buttons
+- `up`/`down` navigation no longer wraps around (no more carousel behaviour)
+- Pressing `Enter` in any text input (title, description, tags) advances focus to the next field
+
+### Added
+- `ctrl+s` saves the snippet from anywhere in the form, including from inside the code editor
+
 ---
 
 ## [0.4.0] — 2026-03-15

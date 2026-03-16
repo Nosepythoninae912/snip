@@ -14,8 +14,19 @@ class EditScreen(ModalScreen[Snippet | None]):
 
     BINDINGS = [
         Binding("escape", "cancel", "Cancel"),
-        Binding("down", "next_field", show=False),
-        Binding("up", "prev_field", show=False),
+        Binding("ctrl+s", "save", "Save", priority=True),
+        Binding("down", "next_field", show=False, priority=True),
+        Binding("up", "prev_field", show=False, priority=True),
+    ]
+
+    _FIELDS = [
+        "input-title",
+        "input-language",
+        "input-description",
+        "input-tags",
+        "input-content",
+        "btn-cancel",
+        "btn-save",
     ]
 
     def __init__(self, snippet: Snippet | None = None) -> None:
@@ -75,6 +86,9 @@ class EditScreen(ModalScreen[Snippet | None]):
                 yield Button("cancel", variant="default", id="btn-cancel")
                 yield Button("save", variant="primary", id="btn-save")
 
+    def on_input_submitted(self, event: Input.Submitted) -> None:
+        self._navigate(+1)
+
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "btn-cancel":
             self.dismiss(None)
@@ -84,13 +98,75 @@ class EditScreen(ModalScreen[Snippet | None]):
     def action_cancel(self) -> None:
         self.dismiss(None)
 
+    def action_save(self) -> None:
+        self._save()
+
+    def _navigate(self, direction: int) -> None:
+        """Move focus through _FIELDS without wrapping. Opens Select when landing on it."""
+        focused = self.focused
+        if focused is None:
+            return
+        # If the overlay is open, treat the parent Select as the current position.
+        if isinstance(getattr(focused, "parent", None), Select):
+            focused = focused.parent
+        current_id = getattr(focused, "id", None)
+        try:
+            idx = self._FIELDS.index(current_id)
+        except ValueError:
+            return
+        new_idx = max(0, min(idx + direction, len(self._FIELDS) - 1))
+        if new_idx != idx:
+            target = self.query_one(f"#{self._FIELDS[new_idx]}")
+            target.focus()
+            if isinstance(target, Select):
+                target.action_show_overlay()
+
     def action_next_field(self) -> None:
-        if not isinstance(self.focused, TextArea):
-            self.focus_next()
+        focused = self.focused
+        if isinstance(focused, TextArea):
+            row, _ = focused.cursor_location
+            if row >= focused.document.line_count - 1:
+                self._navigate(+1)
+            else:
+                focused.action_cursor_down()
+        elif isinstance(getattr(focused, "parent", None), Select):
+            # SelectOverlay is focused — we're inside the open dropdown.
+            overlay = focused
+            at_bottom = (
+                overlay.highlighted is None
+                or overlay.highlighted >= overlay.option_count - 1
+            )
+            if at_bottom:
+                select = focused.parent
+                select.expanded = False
+                select.focus()
+                self._navigate(+1)
+            else:
+                overlay.action_cursor_down()
+        else:
+            self._navigate(+1)
 
     def action_prev_field(self) -> None:
-        if not isinstance(self.focused, TextArea):
-            self.focus_previous()
+        focused = self.focused
+        if isinstance(focused, TextArea):
+            row, _ = focused.cursor_location
+            if row == 0:
+                self._navigate(-1)
+            else:
+                focused.action_cursor_up()
+        elif isinstance(getattr(focused, "parent", None), Select):
+            # SelectOverlay is focused — we're inside the open dropdown.
+            overlay = focused
+            at_top = overlay.highlighted is None or overlay.highlighted <= 0
+            if at_top:
+                select = focused.parent
+                select.expanded = False
+                select.focus()
+                self._navigate(-1)
+            else:
+                overlay.action_cursor_up()
+        else:
+            self._navigate(-1)
 
     def _save(self) -> None:
         title = self.query_one("#input-title", Input).value.strip()
