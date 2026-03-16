@@ -9,6 +9,10 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+---
+
+## [0.5.1] — 2026-03-16
+
 ### Fixed
 - Demo snippets no longer reappear after deleting all snippets; seeding now only runs on a genuine first install (when the database file does not yet exist)
 - Arrow-key navigation in the new/edit snippet form no longer gets stuck in the language selector
@@ -71,6 +75,10 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `install.sh` one-liner installer for Linux / macOS
 - `--db` flag for a custom database path (easy Dropbox / iCloud sync)
 
-[Unreleased]: https://github.com/phlx0/snip/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/phlx0/snip/compare/v0.5.1...HEAD
+[0.5.1]: https://github.com/phlx0/snip/compare/v0.5.0...v0.5.1
+[0.5.0]: https://github.com/phlx0/snip/compare/v0.4.0...v0.5.0
+[0.4.0]: https://github.com/phlx0/snip/compare/v0.3.0...v0.4.0
+[0.3.0]: https://github.com/phlx0/snip/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/phlx0/snip/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/phlx0/snip/releases/tag/v0.1.0
