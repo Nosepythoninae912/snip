@@ -27,6 +27,14 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.5.0] — 2026-03-15
+
+### Added
+- `snip --help` / `-h` — print full usage reference directly in the terminal
+- `CONTRIBUTING.md` — contributor guide covering setup, workflow, and conventions
+
+---
+
 ## [0.4.0] — 2026-03-15
 
 ### Added
