@@ -16,15 +16,17 @@ class SnippetItem(ListItem):
         self.snippet = snippet
 
     def compose(self) -> ComposeResult:
-        pin = "[bold #bb9af7]\u2605 [/bold #bb9af7]" if self.snippet.pinned else ""
+        from snip import themes
+        t = themes.current
+        pin = f"[bold {t.purple}]\u2605 [/bold {t.purple}]" if self.snippet.pinned else ""
         yield Static(
             f"{pin}[bold]{self.snippet.title}[/bold]",
             markup=True,
             classes="item-title",
         )
-        lang = f"[#565f89]{self.snippet.language}[/#565f89]"
+        lang = f"[{t.text_muted}]{self.snippet.language}[/{t.text_muted}]"
         tags = (
-            f"  [#73daca]{self.snippet.tags_display}[/#73daca]"
+            f"  [{t.teal}]{self.snippet.tags_display}[/{t.teal}]"
             if self.snippet.tags
             else ""
         )

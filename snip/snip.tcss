@@ -1,6 +1,9 @@
 /* ═══════════════════════════════════════════════════════════════
    snip.tcss  —  single source of truth for all visual styling
-   Palette (Tokyo Night):
+   Colors are provided via CSS variables ($snip-*) injected at
+   runtime from the active theme (see snip/themes.py).
+
+   Default palette (Tokyo Night):
      bg:           #0d0f18   surface:      #0a0b14
      panel:        #13141f   border:       #2a2c42
      border-dim:   #1a1c2e   select-bg:    #131729
@@ -18,7 +21,7 @@
 /* ── Global ─────────────────────────────────────────────────── */
 
 Screen {
-    background: #0d0f18;
+    background: $snip-bg;
     layers: base overlay;
 }
 
@@ -29,8 +32,8 @@ Screen {
 AppHeader {
     dock: top;
     height: 3;
-    background: #0d0f18;
-    border-bottom: tall #2a2c42;
+    background: $snip-bg;
+    border-bottom: tall $snip-border;
     padding: 1 2 0 2;
 }
 
@@ -40,24 +43,24 @@ AppHeader {
 /* height 2 = 1 border-top row + 1 content row */
 Footer {
     height: 2;
-    background: #13141f;
-    color: #565f89;
-    border-top: tall #2a2c42;
+    background: $snip-panel;
+    color: $snip-text-muted;
+    border-top: tall $snip-border;
 }
 
 FooterKey {
-    background: #13141f;
-    color: #565f89;
+    background: $snip-panel;
+    color: $snip-text-muted;
 }
 
 FooterKey .footer-key--key {
-    color: #7aa2f7;
-    background: #252640;
+    color: $snip-accent;
+    background: $snip-pill-bg;
 }
 
 FooterKey:hover .footer-key--key {
-    background: #7aa2f7;
-    color: #0d0f18;
+    background: $snip-accent;
+    color: $snip-bg;
 }
 
 
@@ -66,14 +69,14 @@ FooterKey:hover .footer-key--key {
 /* search bar — height 3: 1 top-pad + 1 text + 1 border-bottom */
 MainScreen .search-bar {
     height: 3;
-    background: #0a0b14;
-    border-bottom: tall #2a2c42;
+    background: $snip-surface;
+    border-bottom: tall $snip-border;
     padding: 1 2 0 2;
     overflow: hidden;
 }
 
 MainScreen .search-label {
-    color: #7aa2f7;
+    color: $snip-accent;
     text-style: bold;
     width: auto;
     min-width: 2;
@@ -83,7 +86,7 @@ MainScreen .search-label {
 #search-input {
     background: transparent;
     border: none;
-    color: #c0caf5;
+    color: $snip-text;
     height: 1;
     min-width: 8;
     padding: 0;
@@ -96,7 +99,7 @@ MainScreen .search-label {
 }
 
 #search-input .input--placeholder {
-    color: #3b3f5c;
+    color: $snip-text-dim;
 }
 
 /* panels */
@@ -108,9 +111,9 @@ MainScreen .panels {
 /* status bar — height 2: border-top (row 0) + text (row 1) */
 MainScreen .status-bar {
     height: 2;
-    background: #0a0b14;
-    border-top: tall #2a2c42;
-    color: #3b3f5c;
+    background: $snip-surface;
+    border-top: tall $snip-border;
+    color: $snip-text-dim;
     padding: 0 2;
 }
 
@@ -120,12 +123,12 @@ MainScreen #too-small-overlay {
     display: none;
     width: 100%;
     height: 100%;
-    background: #0d0f18;
+    background: $snip-bg;
     align: center middle;
 }
 
 MainScreen #too-small-overlay Static {
-    color: #565f89;
+    color: $snip-text-muted;
     text-align: center;
     width: auto;
 }
@@ -136,28 +139,28 @@ MainScreen #too-small-overlay Static {
 SnippetList {
     width: 33%;
     min-width: 24;
-    background: #0d0f18;
-    border-right: tall #2a2c42;
+    background: $snip-bg;
+    border-right: tall $snip-border;
 }
 
 /* height 3: 1 top-pad + 1 text + 1 border-bottom */
 SnippetList .panel-label {
     height: 3;
-    background: #0a0b14;
-    border-bottom: tall #1a1c2e;
-    color: #2a2c42;
+    background: $snip-surface;
+    border-bottom: tall $snip-border-dim;
+    color: $snip-text-ghost;
     padding: 1 2 0 2;
 }
 
 SnippetList ListView {
-    background: #0d0f18;
+    background: $snip-bg;
     border: none;
     height: 1fr;
     padding: 0;
 }
 
 SnippetList .empty-label {
-    color: #3b3f5c;
+    color: $snip-text-dim;
     padding: 4 2;
     text-align: center;
 }
@@ -171,34 +174,34 @@ SnippetList .empty-label {
   row 0: item-title  row 1: item-meta
 */
 SnippetItem {
-    background: #0d0f18;
-    border-bottom: tall #1a1c2e;
+    background: $snip-bg;
+    border-bottom: tall $snip-border-dim;
     height: 4;
     padding: 1 2 0 2;
 }
 
 SnippetItem:hover {
-    background: #12131e;
+    background: $snip-hover-bg;
 }
 
 SnippetItem.-highlighted {
-    background: #131729;
-    border-left: tall #7aa2f7;
+    background: $snip-select-bg;
+    border-left: tall $snip-accent;
     padding-left: 1;
 }
 
 SnippetItem.-highlighted .item-title {
-    color: #e0e7ff;
+    color: $snip-text-hi;
 }
 
 SnippetItem .item-title {
-    color: #a0aabf;
+    color: $snip-text-mid;
     height: 1;
     text-style: bold;
 }
 
 SnippetItem .item-meta {
-    color: #3b3f5c;
+    color: $snip-text-dim;
     height: 1;
 }
 
@@ -206,7 +209,7 @@ SnippetItem .item-meta {
 /* ── SnippetPreview ──────────────────────────────────────────── */
 
 SnippetPreview {
-    background: #0d0f18;
+    background: $snip-bg;
     overflow-y: auto;
     padding: 1 2;
     width: 1fr;
@@ -215,20 +218,20 @@ SnippetPreview {
 SnippetPreview #preview-header {
     height: auto;
     margin-bottom: 1;
-    color: #c0caf5;
+    color: $snip-text;
 }
 
 /* round border gives ╭─╮╰─╯ corners */
 SnippetPreview .preview-code-wrap {
-    background: #0a0b14;
-    border: round #2a2c42;
+    background: $snip-surface;
+    border: round $snip-border;
     margin: 0 0 1 0;
     padding: 0 1;
 }
 
 SnippetPreview #preview-footer {
     height: auto;
-    color: #565f89;
+    color: $snip-text-muted;
 }
 
 
@@ -236,12 +239,12 @@ SnippetPreview #preview-footer {
 
 EditScreen {
     align: center middle;
-    background: #0d0f18;
+    background: $snip-bg;
 }
 
 EditScreen > Vertical {
-    background: #13141f;
-    border: tall #2a2c42;
+    background: $snip-panel;
+    border: tall $snip-border;
     height: 90%;
     overflow-y: auto;
     padding: 1 3;
@@ -249,32 +252,32 @@ EditScreen > Vertical {
 }
 
 EditScreen .modal-title {
-    color: #7aa2f7;
+    color: $snip-accent;
     height: auto;
     margin-bottom: 1;
     text-style: bold;
 }
 
 EditScreen .modal-divider {
-    color: #2a2c42;
+    color: $snip-text-ghost;
     height: 1;
 }
 
 EditScreen .form-label {
-    color: #565f89;
+    color: $snip-text-muted;
     height: 1;
 }
 
 EditScreen Input {
-    background: #0d0f18;
-    border: tall #2a2c42;
-    color: #c0caf5;
+    background: $snip-bg;
+    border: tall $snip-border;
+    color: $snip-text;
     margin-bottom: 1;
 }
 
 EditScreen Input:focus {
-    background: #0a0b14;
-    border: tall #7aa2f7;
+    background: $snip-surface;
+    border: tall $snip-accent;
 }
 
 EditScreen Select {
@@ -282,18 +285,18 @@ EditScreen Select {
 }
 
 EditScreen Select:focus {
-    border: tall #7aa2f7;
+    border: tall $snip-accent;
 }
 
 EditScreen TextArea {
-    background: #0d0f18;
-    border: tall #2a2c42;
+    background: $snip-bg;
+    border: tall $snip-border;
     height: 14;
     margin-bottom: 1;
 }
 
 EditScreen TextArea:focus {
-    border: tall #7aa2f7;
+    border: tall $snip-accent;
 }
 
 EditScreen .btn-row {
@@ -307,22 +310,22 @@ EditScreen Button {
 }
 
 EditScreen #btn-save {
-    background: #7aa2f7;
+    background: $snip-accent;
     border: none;
-    color: #0d0f18;
+    color: $snip-bg;
 }
 
 EditScreen #btn-save:hover {
-    background: #5a82d7;
+    background: $snip-accent-hover;
 }
 
 EditScreen #btn-cancel {
-    background: #252640;
+    background: $snip-pill-bg;
     border: none;
-    color: #565f89;
+    color: $snip-text-muted;
 }
 
 EditScreen #btn-cancel:hover {
-    background: #2a2c50;
-    color: #c0caf5;
+    background: $snip-pill-bg-hover;
+    color: $snip-text;
 }

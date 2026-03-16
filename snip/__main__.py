@@ -15,9 +15,9 @@ def _info(msg: str) -> None:
         print(msg, file=sys.stderr)
 
 
-def _run_tui(db_path: Path) -> None:
+def _run_tui(db_path: Path, theme_name: str | None = None) -> None:
     from snip.app import SnipApp
-    SnipApp(db_path=db_path).run()
+    SnipApp(db_path=db_path, theme_name=theme_name).run()
 
 
 def _run_list(db_path: Path, tag: str = "") -> None:
@@ -296,6 +296,43 @@ _snip
 """
 
 
+def _run_theme_list() -> None:
+    from snip import themes
+
+    active = themes.get_active_name()
+    for name in themes.list_themes():
+        marker = "  (active)" if name == active else ""
+        print(f"  {name}{marker}")
+
+
+def _run_theme_import(file_path: str) -> None:
+    from snip import themes
+
+    src = Path(file_path)
+    if not src.exists():
+        print(f"snip: file not found: {file_path}", file=sys.stderr)
+        sys.exit(1)
+    try:
+        name = themes.import_theme(src)
+    except (ValueError, Exception) as e:
+        print(f"snip: invalid theme file — {e}", file=sys.stderr)
+        sys.exit(1)
+    themes.set_active(name)
+    _info(f"Imported and activated theme '{name}'.")
+
+
+def _run_theme_set(name: str) -> None:
+    from snip import themes
+
+    try:
+        themes.load(name)
+    except FileNotFoundError as e:
+        print(f"snip: {e}", file=sys.stderr)
+        sys.exit(1)
+    themes.set_active(name)
+    _info(f"Active theme set to '{name}'.")
+
+
 def _run_init(shell: str) -> None:
     if shell == "bash":
         print(_BASH_COMPLETION)
@@ -313,11 +350,17 @@ def main() -> None:
     from snip.app import _DEFAULT_DB
 
     db_path: Path = _DEFAULT_DB
+    theme_name: str | None = None
     args = sys.argv[1:]
 
     # Strip --db <path>
     if len(args) >= 2 and args[0] == "--db":
         db_path = Path(args[1])
+        args = args[2:]
+
+    # Strip --theme <name>
+    if len(args) >= 2 and args[0] == "--theme":
+        theme_name = args[1]
         args = args[2:]
 
     # Strip -q / --quiet
@@ -327,7 +370,7 @@ def main() -> None:
 
     try:
         if not args:
-            _run_tui(db_path)
+            _run_tui(db_path, theme_name)
         elif args[0] in ("--help", "-h"):
             print(f"""\
 snip {VERSION} — terminal snippet vault
@@ -345,10 +388,16 @@ OPTIONS
   --export                      dump all snippets to JSON (stdout)
   --import <file|->>            import snippets from JSON
   --from-history                pick a shell history command and save it
+  --theme <name>                launch TUI with a specific theme
   --db <path>                   use a custom database file
   -q, --quiet                   suppress informational output
   --version                     show version
   --help                        show this help
+
+THEMES
+  snip theme list               list available themes
+  snip theme import <file>      import a custom theme JSON and activate it
+  snip theme set <name>         set the active theme
 
 SHELL COMPLETION
   eval "$(snip init zsh)"       add to ~/.zshrc
@@ -358,6 +407,7 @@ EXAMPLES
   snip ports                    copy 'ports' snippet to clipboard
   snip run deploy               run 'deploy' snippet in shell
   snip --list docker            list snippets tagged #docker
+  snip --theme dracula          open TUI with the Dracula theme
   snip --list | fzf | xargs snip
   snip --export > backup.json
 """)
@@ -380,6 +430,16 @@ EXAMPLES
             _run_delete(" ".join(args[1:]), db_path)
         elif args[0] == "--json" and len(args) >= 2:
             _run_json(" ".join(args[1:]), db_path)
+        elif args[0] == "theme":
+            if len(args) < 2 or args[1] == "list":
+                _run_theme_list()
+            elif args[1] == "import" and len(args) >= 3:
+                _run_theme_import(args[2])
+            elif args[1] == "set" and len(args) >= 3:
+                _run_theme_set(args[2])
+            else:
+                print("snip: usage: snip theme <list|import <file>|set <name>>", file=sys.stderr)
+                sys.exit(1)
         elif args[0] == "init" and len(args) >= 2:
             _run_init(args[1])
         else:
