@@ -69,8 +69,9 @@ class SnipApp(App):
 
     def __init__(self, db_path: Path = _DEFAULT_DB) -> None:
         super().__init__()
+        is_new_db = not db_path.exists()
         self._db = Database(db_path)
-        if self._db.count() == 0:
+        if is_new_db:
             _seed_demo(self._db)
 
     def on_mount(self) -> None:

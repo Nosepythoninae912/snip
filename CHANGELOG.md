@@ -10,6 +10,7 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Fixed
+- Demo snippets no longer reappear after deleting all snippets; seeding now only runs on a genuine first install (when the database file does not yet exist)
 - Arrow-key navigation in the new/edit snippet form no longer gets stuck in the language selector
 - Navigating down from the title field opens the language dropdown automatically; navigating up from description also opens it
 - At the top of the language list, pressing up closes the dropdown and moves focus to the title field; at the bottom, pressing down closes it and moves to description
