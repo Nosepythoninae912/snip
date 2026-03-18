@@ -115,7 +115,7 @@ def _run_add(file_path: str, db_path: Path) -> None:
         print(f"snip: file not found: {file_path}", file=sys.stderr)
         sys.exit(1)
 
-    content = path.read_text()
+    content = path.read_text(errors="replace")
     title = path.stem
     language = _lang_from_ext(path)
 
@@ -173,13 +173,15 @@ def _run_import(file_path: str, db_path: Path) -> None:
         if "title" not in item or "content" not in item:
             print(f"snip: skipping entry {i} — missing title or content", file=sys.stderr)
             continue
+        tags_raw = item.get("tags", [])
+        tags = [str(t) for t in tags_raw] if isinstance(tags_raw, list) else []
         db.create(Snippet(
             title=item["title"],
             content=item["content"],
             language=item.get("language", "text"),
             description=item.get("description", ""),
-            tags=item.get("tags", []),
-            pinned=item.get("pinned", False),
+            tags=tags,
+            pinned=bool(item.get("pinned", False)),
         ))
         _info(f"  imported '{item['title']}'")
 
