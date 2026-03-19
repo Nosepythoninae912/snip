@@ -8,7 +8,6 @@ from textual.widgets import Static
 
 from snip.models.snippet import Snippet
 
-
 _LANG_MAP: dict[str, str] = {
     "bash": "bash",
     "c": "c",
@@ -39,14 +38,21 @@ _LANG_MAP: dict[str, str] = {
 def _make_syntax(content: str, language: str):
     """Return a Rich Syntax renderable styled with the active theme."""
     from rich.syntax import Syntax
+
     from snip import themes
 
     t = themes.current
     try:
         from pygments.style import Style
         from pygments.token import (
-            Comment, Generic, Keyword, Name, Number,
-            Operator, String, Token,
+            Comment,
+            Generic,
+            Keyword,
+            Name,
+            Number,
+            Operator,
+            String,
+            Token,
         )
         from rich.syntax import PygmentsSyntaxTheme
 
@@ -106,6 +112,7 @@ class SnippetPreview(Widget):
 
     def _show_empty(self) -> None:
         from rich.text import Text
+
         from snip import themes
 
         self.query_one("#preview-header", Static).update(
@@ -116,6 +123,7 @@ class SnippetPreview(Widget):
 
     def _render_snippet(self, snippet: Snippet) -> None:
         from rich.text import Text
+
         from snip import themes
 
         t = themes.current

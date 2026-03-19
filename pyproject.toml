@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "snip-tui"
-version = "0.6.2"
+version = "0.6.3"
 description = "A terminal snippet manager — store, search, and copy code snippets without leaving your shell"
 readme = "README.md"
 license = { text = "MIT" }
@@ -31,6 +31,7 @@ dev = [
     "pytest>=7.4",
     "pytest-asyncio>=0.23",
     "pytest-cov>=4.1",
+    "ruff>=0.4",
 ]
 
 [project.scripts]
@@ -54,3 +55,22 @@ omit = ["tests/*"]
 
 [tool.coverage.report]
 show_missing = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes (undefined names, unused imports, etc.)
+    "I",   # isort (import order)
+    "UP",  # pyupgrade (modern Python syntax)
+]
+ignore = [
+    "E501",  # line too long — formatter handles this
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["snip"]

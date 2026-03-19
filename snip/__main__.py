@@ -4,7 +4,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-VERSION = "0.6.2"
+VERSION = "0.6.3"
 
 # Set to True by -q / --quiet to suppress informational stderr messages
 _quiet = False
@@ -31,7 +31,7 @@ def _run_list(db_path: Path, tag: str = "") -> None:
         print(s.title)
 
 
-def _resolve(query: str, db_path: Path) -> "Snippet":
+def _resolve(query: str, db_path: Path) -> "Snippet":  # noqa: F821
     from snip.storage.database import Database
 
     db = Database(db_path)
@@ -362,17 +362,14 @@ def main() -> None:
     theme_name: str | None = None
     args = sys.argv[1:]
 
-    # Strip --db <path>
     if len(args) >= 2 and args[0] == "--db":
         db_path = Path(args[1])
         args = args[2:]
 
-    # Strip --theme <name>
     if len(args) >= 2 and args[0] == "--theme":
         theme_name = args[1]
         args = args[2:]
 
-    # Strip -q / --quiet
     if "-q" in args or "--quiet" in args:
         _quiet = True
         args = [a for a in args if a not in ("-q", "--quiet")]

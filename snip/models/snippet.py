@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import datetime
+
 SUPPORTED_LANGUAGES = [
     "text", "python", "javascript", "typescript", "bash", "go", "rust",
     "c", "cpp", "java", "json", "yaml", "toml", "sql", "html", "css",

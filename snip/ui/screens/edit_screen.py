@@ -6,7 +6,7 @@ from textual.containers import Horizontal, Vertical
 from textual.screen import ModalScreen
 from textual.widgets import Button, Input, Label, Select, TextArea
 
-from snip.models.snippet import Snippet, SUPPORTED_LANGUAGES
+from snip.models.snippet import SUPPORTED_LANGUAGES, Snippet
 
 
 class EditScreen(ModalScreen[Snippet | None]):

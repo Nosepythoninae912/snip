@@ -11,6 +11,20 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.6.3] — 2026-03-19
+
+### Added
+- `ruff` linting (`make lint` / `make lint-fix`) — replaces the old syntax-only check
+- Expanded `CONTRIBUTING.md` with conventional commit guidelines and code style principles
+
+### Changed
+- Removed redundant section-divider comments (`# --- CRUD ---`, `# --- Actions ---`, etc.) from `database.py` and `main_screen.py`
+- Removed obvious inline comments in `__main__.py` that restated the code
+- Fixed extra blank line in `app.py` between top-level definitions
+- Cleaned up unused imports and unsorted import blocks found by ruff across source and test files
+
+---
+
 ## [0.6.2] — 2026-03-19
 
 ### Fixed

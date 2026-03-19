@@ -1,4 +1,4 @@
-.PHONY: install dev test test-cov lint run clean
+.PHONY: install dev test test-cov lint lint-fix run clean
 
 VENV   := .venv
 PYTHON := $(VENV)/bin/python
@@ -39,7 +39,10 @@ test-cov:
 # ── misc ─────────────────────────────────────────────────────────────
 
 lint:
-	$(PYTHON) -m py_compile snip/**/*.py && echo "Syntax OK"
+	$(PYTHON) -m ruff check snip/ tests/
+
+lint-fix:
+	$(PYTHON) -m ruff check --fix snip/ tests/
 
 clean:
 	rm -rf dist/ build/ *.egg-info .coverage htmlcov/ .pytest_cache/ $(VENV)

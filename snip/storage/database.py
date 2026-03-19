@@ -4,6 +4,7 @@ import json
 import sqlite3
 from datetime import datetime
 from pathlib import Path
+
 from snip.models.snippet import Snippet
 
 
@@ -33,10 +34,6 @@ class Database:
                     updated_at  TEXT    NOT NULL
                 )
             """)
-
-    # ------------------------------------------------------------------
-    # CRUD
-    # ------------------------------------------------------------------
 
     def create(self, snippet: Snippet) -> Snippet:
         now = datetime.now().isoformat()
@@ -119,10 +116,6 @@ class Database:
         with self._connect() as conn:
             row = conn.execute("SELECT COUNT(*) as n FROM snippets").fetchone()
         return row["n"]
-
-    # ------------------------------------------------------------------
-    # Helpers
-    # ------------------------------------------------------------------
 
     @staticmethod
     def _row_to_snippet(row: sqlite3.Row) -> Snippet:

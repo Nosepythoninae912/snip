@@ -1,13 +1,11 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
 
 import pytest
 
 from snip import themes
-from snip.themes import Theme, load, list_themes, get_active_name, set_active, import_theme
-
+from snip.themes import get_active_name, import_theme, list_themes, load, set_active
 
 # ---------------------------------------------------------------------------
 # load

@@ -1,8 +1,6 @@
 from datetime import datetime
 
-import pytest
-
-from snip.models.snippet import Snippet, SUPPORTED_LANGUAGES
+from snip.models.snippet import SUPPORTED_LANGUAGES, Snippet
 
 
 class TestSnippetDefaults:

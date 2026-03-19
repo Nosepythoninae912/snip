@@ -7,9 +7,7 @@ from textual.app import App
 from snip.storage.database import Database
 from snip.ui.screens.main_screen import MainScreen
 
-
 _DEFAULT_DB = Path.home() / ".config" / "snip" / "snip.db"
-
 
 
 def _seed_demo(db: Database) -> None:

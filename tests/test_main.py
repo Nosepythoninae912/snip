@@ -1,13 +1,10 @@
 from __future__ import annotations
 
 import json
-import sys
 from pathlib import Path
 
 import pytest
 
-from snip.models.snippet import Snippet
-from snip.storage.database import Database
 from snip.__main__ import (
     _lang_from_ext,
     _resolve,
@@ -15,7 +12,8 @@ from snip.__main__ import (
     _run_export,
     _run_import,
 )
-
+from snip.models.snippet import Snippet
+from snip.storage.database import Database
 
 # ---------------------------------------------------------------------------
 # _lang_from_ext
@@ -66,7 +64,7 @@ class TestResolve:
         assert result.title == "Deploy script"
 
     def test_no_match_exits(self, tmp_db_path):
-        db = Database(tmp_db_path)
+        Database(tmp_db_path)
         with pytest.raises(SystemExit):
             _resolve("nonexistent", tmp_db_path)
 

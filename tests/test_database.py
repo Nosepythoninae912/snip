@@ -1,8 +1,5 @@
-import pytest
-from pathlib import Path
 
 from snip.models.snippet import Snippet
-from snip.storage.database import Database
 
 
 class TestCreate:

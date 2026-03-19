@@ -60,10 +60,6 @@ class MainScreen(Screen):
         )
         self.query_one("#too-small-overlay").display = too_small
 
-    # ------------------------------------------------------------------
-    # List / search helpers
-    # ------------------------------------------------------------------
-
     def _refresh_list(self, query: str = "", select_id: int | None = None) -> None:
         snippets = self._db.search(query) if query else self._db.get_all()
         sl: SnippetList = self.query_one("#snippet-list", SnippetList)
@@ -92,10 +88,6 @@ class MainScreen(Screen):
         filt = f"  \u00b7  \"{self._query}\"" if self._query else ""
         self.query_one("#status-bar", Static).update(count + filt)
 
-    # ------------------------------------------------------------------
-    # Events
-    # ------------------------------------------------------------------
-
     def __init__(self, db) -> None:  # type: ignore[override]
         super().__init__()
         self._db = db
@@ -111,10 +103,6 @@ class MainScreen(Screen):
             return
         if isinstance(event.item, SnippetItem):
             self._update_preview(event.item.snippet)
-
-    # ------------------------------------------------------------------
-    # Actions
-    # ------------------------------------------------------------------
 
     def action_move_down(self) -> None:
         self.query_one("#snippet-list", SnippetList).move_down()
