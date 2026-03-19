@@ -20,10 +20,10 @@ def _run_tui(snippets_dir: Path, theme_name: str | None = None) -> None:
     SnipApp(snippets_dir=snippets_dir, theme_name=theme_name).run()
 
 
-def _run_list(db_path: Path, tag: str = "") -> None:
+def _run_list(snippets_dir: Path, tag: str = "") -> None:
     from snip.storage.database import Database
 
-    db = Database(db_path)
+    db = Database(snippets_dir)
     snippets = db.get_all()
     if tag:
         snippets = [s for s in snippets if tag.lower() in [t.lower() for t in s.tags]]
@@ -31,10 +31,10 @@ def _run_list(db_path: Path, tag: str = "") -> None:
         print(s.title)
 
 
-def _resolve(query: str, db_path: Path) -> "Snippet":  # noqa: F821
+def _resolve(query: str, snippets_dir: Path) -> "Snippet":  # noqa: F821
     from snip.storage.database import Database
 
-    db = Database(db_path)
+    db = Database(snippets_dir)
     snippets = db.get_all()
     q = query.lower()
     exact = [s for s in snippets if s.title.lower() == q]
@@ -53,23 +53,23 @@ def _resolve(query: str, db_path: Path) -> "Snippet":  # noqa: F821
     return matches[0]
 
 
-def _run_copy(query: str, db_path: Path) -> None:
+def _run_copy(query: str, snippets_dir: Path) -> None:
     from snip.utils.clipboard import copy_to_clipboard
 
-    snippet = _resolve(query, db_path)
+    snippet = _resolve(query, snippets_dir)
     print(snippet.content)
     if copy_to_clipboard(snippet.content):
         _info(f"Copied '{snippet.title}' to clipboard.")
 
 
-def _run_exec(query: str, db_path: Path) -> None:
-    snippet = _resolve(query, db_path)
+def _run_exec(query: str, snippets_dir: Path) -> None:
+    snippet = _resolve(query, snippets_dir)
     result = subprocess.run(snippet.content, shell=True)
     sys.exit(result.returncode)
 
 
-def _run_json(query: str, db_path: Path) -> None:
-    snippet = _resolve(query, db_path)
+def _run_json(query: str, snippets_dir: Path) -> None:
+    snippet = _resolve(query, snippets_dir)
     print(json.dumps({
         "id": snippet.id,
         "title": snippet.title,
@@ -81,12 +81,11 @@ def _run_json(query: str, db_path: Path) -> None:
     }, indent=2))
 
 
-def _run_delete(query: str, db_path: Path) -> None:
+def _run_delete(query: str, snippets_dir: Path) -> None:
     from snip.storage.database import Database
 
-    snippet = _resolve(query, db_path)
-    db = Database(db_path)
-    db.delete(snippet.id)
+    snippet = _resolve(query, snippets_dir)
+    Database(snippets_dir).delete(snippet.id)
     _info(f"Deleted '{snippet.title}'.")
 
 
@@ -106,7 +105,7 @@ def _lang_from_ext(path: Path) -> str:
     return mapping.get(path.suffix.lower(), "text")
 
 
-def _run_add(file_path: str, db_path: Path) -> None:
+def _run_add(file_path: str, snippets_dir: Path) -> None:
     from snip.models.snippet import Snippet
     from snip.storage.database import Database
 
@@ -119,15 +118,15 @@ def _run_add(file_path: str, db_path: Path) -> None:
     title = path.stem
     language = _lang_from_ext(path)
 
-    db = Database(db_path)
+    db = Database(snippets_dir)
     snippet = db.create(Snippet(title=title, content=content, language=language))
     _info(f"Saved '{snippet.title}' (id {snippet.id}, language: {language})")
 
 
-def _run_export(db_path: Path) -> None:
+def _run_export(snippets_dir: Path) -> None:
     from snip.storage.database import Database
 
-    db = Database(db_path)
+    db = Database(snippets_dir)
     data = [
         {
             "title": s.title,
@@ -142,7 +141,7 @@ def _run_export(db_path: Path) -> None:
     print(json.dumps(data, indent=2))
 
 
-def _run_import(file_path: str, db_path: Path) -> None:
+def _run_import(file_path: str, snippets_dir: Path) -> None:
     from snip.models.snippet import Snippet
     from snip.storage.database import Database
 
@@ -165,7 +164,7 @@ def _run_import(file_path: str, db_path: Path) -> None:
         print("snip: JSON must be an array of snippet objects", file=sys.stderr)
         sys.exit(1)
 
-    db = Database(db_path)
+    db = Database(snippets_dir)
     for i, item in enumerate(data):
         if not isinstance(item, dict):
             print(f"snip: skipping entry {i} — expected an object", file=sys.stderr)
@@ -217,7 +216,7 @@ def _read_history() -> list[str]:
     return []
 
 
-def _run_from_history(db_path: Path) -> None:
+def _run_from_history(snippets_dir: Path) -> None:
     from snip.models.snippet import Snippet
     from snip.storage.database import Database
 
@@ -262,7 +261,7 @@ def _run_from_history(db_path: Path) -> None:
     if not title:
         title = command[:60]
 
-    db = Database(db_path)
+    db = Database(snippets_dir)
     snippet = db.create(Snippet(title=title, content=command, language="bash"))
     _info(f"\nSaved '{snippet.title}' (id {snippet.id})")
 
