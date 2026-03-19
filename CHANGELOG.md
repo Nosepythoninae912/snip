@@ -11,6 +11,34 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.7.0] — 2026-03-19
+
+> **Breaking change** — see migration notes below before upgrading.
+
+### Changed
+
+- **Storage architecture**: snippets are now stored as individual Markdown files with frontmatter in `~/.config/snip/snippets/`. A SQLite index (`snip.db`) is maintained alongside for fast querying and rebuilt from files on startup. The snippets directory is designed to be tracked with git; `snip.db` is excluded via an auto-created `.gitignore`.
+- **Snippet IDs** are now 12-character hex strings (UUID-based) instead of auto-increment integers. The `--json` output reflects this.
+- **`--db` flag** now accepts a snippets directory path instead of a `.db` file path. Default: `~/.config/snip/snippets`.
+
+### Added
+
+- Automatic migration of existing `snip.db` data to flat files on first run — no manual steps required.
+- Auto-created `~/.config/snip/.gitignore` that excludes `snip.db` so it is never accidentally committed.
+- `docs/dotfile-sync.md` rewritten with a full git-native sync workflow.
+
+### Migration notes
+
+On first run after upgrading, snip detects an existing `snip.db` and automatically:
+
+1. Reads all snippets from the old database
+2. Writes each as a `.md` file in `~/.config/snip/snippets/`
+3. Replaces the old database with a fresh index
+
+No action is required. If you used `--db` with a custom path like `--db ~/Dropbox/snip.db`, update it to point to a directory: `--db ~/Dropbox/snip/snippets`.
+
+---
+
 ## [0.6.3] — 2026-03-19
 
 ### Added
@@ -139,7 +167,9 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `install.sh` one-liner installer for Linux / macOS
 - `--db` flag for a custom database path (easy Dropbox / iCloud sync)
 
-[Unreleased]: https://github.com/phlx0/snip/compare/v0.6.2...HEAD
+[Unreleased]: https://github.com/phlx0/snip/compare/v0.7.0...HEAD
+[0.7.0]: https://github.com/phlx0/snip/compare/v0.6.3...v0.7.0
+[0.6.3]: https://github.com/phlx0/snip/compare/v0.6.2...v0.6.3
 [0.6.2]: https://github.com/phlx0/snip/compare/v0.6.1...v0.6.2
 [0.6.1]: https://github.com/phlx0/snip/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/phlx0/snip/compare/v0.5.1...v0.6.0

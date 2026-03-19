@@ -1,38 +1,74 @@
 # Dotfile sync
 
-snip stores everything in a single SQLite file at `~/.config/snip/snip.db`. You can point it at any path with `--db`, making sync trivial.
+snip stores each snippet as a plain Markdown file with frontmatter in `~/.config/snip/snippets/`. This directory is designed to be tracked with git — every snippet is a human-readable, diffable text file.
 
-## Dropbox / iCloud / Syncthing
+A SQLite index (`~/.config/snip/snip.db`) is maintained alongside for fast search. It is regenerated automatically from the snippet files on startup and is excluded from git via a `.gitignore` that snip creates automatically.
+
+## Git-native sync
 
 ```bash
-snip --db ~/Dropbox/snip.db
+cd ~/.config/snip
+git init
+git add snippets/
+git commit -m "initial snippets"
+git remote add origin git@github.com:you/dotfiles.git
+git push -u origin main
 ```
 
-To avoid typing `--db` every time, add an alias to your shell config:
+On another machine:
 
 ```bash
-alias snip='snip --db ~/Dropbox/snip.db'
+git clone git@github.com:you/dotfiles.git ~/.config/snip
+snip   # SQLite index is built automatically on first run
 ```
 
-## Git-based dotfiles
-
-Export your snippets to JSON and commit that instead of the binary db:
+When you add or edit snippets on one machine:
 
 ```bash
-# export
+cd ~/.config/snip
+git add snippets/
+git commit -m "add docker cleanup snippet"
+git push
+```
+
+On the other machine:
+
+```bash
+cd ~/.config/snip
+git pull
+snip   # new snippets are synced into the index on startup
+```
+
+## Why this works well
+
+- Each snippet is its own file — adding snippets on two machines produces no merge conflicts
+- `git diff` shows exactly what changed in a snippet's title, content, or tags
+- `git log` gives you a full history of every snippet
+- Files are readable and editable without snip installed
+
+## Custom snippets directory
+
+To use a different location, pass `--db <dir>` and set an alias:
+
+```bash
+alias snip='snip --db ~/dotfiles/snippets'
+```
+
+## JSON export / import
+
+If you prefer a single-file backup over a git-tracked directory:
+
+```bash
 snip --export > ~/dotfiles/snippets.json
-
-# restore on a new machine
 snip --import ~/dotfiles/snippets.json
 ```
 
-Add a Makefile target or shell alias to keep it in sync:
+## Multiple machines without git
+
+Point all machines at a shared synced directory (Dropbox, Syncthing, etc.):
 
 ```bash
-alias snip-backup='snip --export > ~/dotfiles/snippets.json'
-alias snip-restore='snip --import ~/dotfiles/snippets.json'
+alias snip='snip --db ~/Dropbox/snip/snippets'
 ```
 
-## Multiple machines
-
-Each machine can run `snip --db /path/to/shared.db` pointing to the same synced file. If two machines edit simultaneously there is no merge — last write wins. For most personal setups this is fine.
+Each machine keeps its own index file locally. Simultaneous edits to the same snippet will produce a file conflict that git or your sync tool can resolve.

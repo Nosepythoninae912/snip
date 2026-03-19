@@ -30,7 +30,7 @@ snip [OPTIONS] [QUERY]
 | `--import <file\|->` | Import snippets from a JSON file. Use `-` to read from stdin |
 | `--from-history` | Pick a command from shell history and save it as a snippet |
 | `--theme <name>` | Launch the TUI with a specific theme for this session only |
-| `--db <path>` | Use a custom database file instead of `~/.config/snip/snip.db` |
+| `--db <dir>` | Use a custom snippets directory instead of `~/.config/snip/snippets` |
 | `-q`, `--quiet` | Suppress informational stderr output |
 | `--version`, `-v` | Print version string |
 | `--help`, `-h` | Show help |

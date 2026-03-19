@@ -1,5 +1,4 @@
 import sqlite3
-from pathlib import Path
 
 import pytest
 
@@ -160,11 +159,12 @@ class TestSync:
         assert db2.get_all()[0].title == "Persisted"
 
     def test_file_added_externally_is_synced(self, tmp_path):
-        from snip.storage.database import _to_file_text
         from datetime import datetime
 
+        from snip.storage.database import _to_file_text
+
         dir1 = tmp_path / "snippets"
-        db1 = Database(dir1)
+        Database(dir1)
 
         s = Snippet(title="External", content="added externally")
         s.id = "externalabc1"

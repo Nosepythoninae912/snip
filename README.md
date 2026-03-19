@@ -76,7 +76,7 @@ snip --import backup.json     # import snippets from JSON
 snip --from-history           # pick a command from shell history and save it
 snip --version                # show version
 snip -q ports                 # suppress informational output (clean for scripts)
-snip --db ~/sync/snip.db      # use a custom db — easy cloud sync
+snip --db ~/sync/snippets     # use a custom snippets directory
 snip theme list               # list available themes
 snip theme set dracula        # switch to the Dracula theme
 snip theme import my.json     # import a custom theme and activate it
@@ -125,7 +125,7 @@ Pick any snippet interactively with fuzzy search, pipe it straight to your clipb
 | **Pin snippets** | Keep your most-used snippets pinned at the top |
 | **Tags** | Organise freely — `#docker #devops #git` etc. |
 | **Vim-style navigation** | `j`/`k` or arrow keys, `/` to search, `q` to quit |
-| **SQLite storage** | Lives in `~/.config/snip/snip.db` — portable, zero-dependency |
+| **Git-friendly storage** | Snippets are plain Markdown files in `~/.config/snip/snippets/` — track with git, diff, merge, sync across machines |
 | **Fully offline** | No server, no account, your data stays local |
 
 ---
@@ -160,7 +160,7 @@ snip/
 │   ├── models/
 │   │   └── snippet.py       # Snippet dataclass
 │   ├── storage/
-│   │   └── database.py      # SQLite CRUD
+│   │   └── database.py      # flat-file store + SQLite index
 │   ├── ui/
 │   │   ├── screens/
 │   │   │   ├── main_screen.py
