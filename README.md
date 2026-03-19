@@ -207,6 +207,14 @@ Full documentation is available on the [**wiki**](https://github.com/phlx0/snip/
 
 ---
 
+## Neovim plugin
+
+There's an unofficial Neovim plugin for snip: [**phlx0/snip.nvim**](https://github.com/phlx0/snip.nvim)
+
+> **Note:** The plugin is still in very early stages and may be a bit buggy. Feedback and issues are welcome.
+
+---
+
 ## Contributing
 
 Bug reports and pull requests are welcome on [GitHub](https://github.com/phlx0/snip/issues).
